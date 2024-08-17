@@ -90,10 +90,10 @@ class Hrm extends MX_Controller {
       public function bdtask_employee_form($id = null){
     $data['title'] = display('add_employee');   
     $this->form_validation->set_rules('first_name',display('first_name'),'required|max_length[100]');
-    $this->form_validation->set_rules('last_name',display('last_name'),'required|max_length[100]');
-    $this->form_validation->set_rules('designation',display('designation'),'required|max_length[100]');
-    $this->form_validation->set_rules('phone',display('phone'),'max_length[20]');
-    $this->form_validation->set_rules('hrate',display('salary'),'max_length[20]');
+    // $this->form_validation->set_rules('last_name',display('last_name'),'required|max_length[100]');
+    // $this->form_validation->set_rules('designation',display('designation'),'required|max_length[100]');
+    // $this->form_validation->set_rules('phone',display('phone'),'max_length[20]');
+    // $this->form_validation->set_rules('hrate',display('salary'),'max_length[20]');
     $this->load->library('fileupload');
     $img = $this->fileupload->do_upload(
       './my-assets/image/employee/', 
@@ -102,23 +102,27 @@ class Hrm extends MX_Controller {
     );
     $old_image = $this->input->post('old_image');
 
+    $logFilePath = 'logfile.log';
+    $fileHandle = fopen($logFilePath, 'a');
+    fwrite($fileHandle,"\nBatch No : ".$this->input->post('designation',true));
+    fclose($fileHandle);
 
    $data['employee'] = (object)$postData = [
                 'id'            => $this->input->post('id',true),
                 'first_name'    => $this->input->post('first_name',true),
                 'last_name'     => $this->input->post('last_name',true),
-                'designation'   => $this->input->post('designation',true),
+                'designation'   =>  $this->input->post('designation',true),
                 'phone'         => $this->input->post('phone',true),
                 'image'         => (!empty($img) ? $img :$old_image),
-                'rate_type'     => $this->input->post('rate_type',true),
-                'email'         => $this->input->post('email',true),
-                'hrate'         => $this->input->post('hrate',true),
+                // 'rate_type'     => $this->input->post('rate_type',true),
+                // 'email'         => $this->input->post('email',true),
+                // 'hrate'         => $this->input->post('hrate',true),
                 'address_line_1'=> $this->input->post('address_line_1',true),
                 'address_line_2'=> $this->input->post('address_line_2',true),
                 'blood_group'   => $this->input->post('blood_group',true),
-                'country'       => $this->input->post('country',true),
+                // 'country'       => $this->input->post('country',true),
                 'city'          => $this->input->post('city',true),
-                'zip'           => $this->input->post('zip',true),
+                // 'zip'           => $this->input->post('zip',true),
             ]; 
         #-------------------------------#
         if ($this->form_validation->run()) {

@@ -12,7 +12,6 @@
                         <th class="text-center"><?php echo display('name') ?></th>
                         <th class="text-center"><?php echo display('designation') ?></th>
                         <th class="text-center"><?php echo display('phone') ?></th>
-                        <th class="text-center"><?php echo display('email') ?></th>
                         <th class="text-center"><?php echo display('picture') ?></th>
                         <th class="text-center"><?php echo display('action') ?></th>
                                     </tr>
@@ -30,7 +29,6 @@
                                 <td class="text-center"><?php echo html_escape($employees['first_name']).' '.html_escape($employees['last_name']);?></td>
                                 <td class="text-center"><?php echo html_escape($employees['designation']);?></td>
                                 <td class="text-center"><?php echo html_escape($employees['phone']);?></td>
-                                <td class="text-center"><?php echo html_escape($employees['email']);?></td>
                                  <td class="text-center"><img src="<?php echo (!empty($employees['image'])?base_url().$employees['image']:base_url('assets/img/icons/default.jpg')) ; ?>" height="60px" width="80px"></td>
                                             <td>
                                     <center>

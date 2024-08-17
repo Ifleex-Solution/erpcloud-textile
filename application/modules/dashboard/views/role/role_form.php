@@ -29,6 +29,8 @@
                         <th><?php echo display('read');?> (<input type="checkbox" onclick="checkallread(<?php echo $m?>)" id="checkAllread<?php echo $m?>"  name="" > all)</th>
                         <th><?php echo display('update');?> (<input type="checkbox" onclick="checkalledit(<?php echo $m?>)" id="checkAlledit<?php echo $m?>"  name="" > all)</th>
                         <th><?php echo display('delete');?> (<input type="checkbox" onclick="checkalldelete(<?php echo $m?>)" id="checkAlldelete<?php echo $m?>"  name="" > all)</th>
+                        <th><?php echo "View";?> (<input type="checkbox" onclick="checkallview(<?php echo $m?>)" id="checkAllview<?php echo $m?>"  name="" > all)</th>
+
                     </tr>
                     </thead>
                     <?php $sl = 0 ?>
@@ -40,6 +42,8 @@
                             $readID   = 'id="read'.$m.''.$sl.'" class="read'.$m.'"';
                             $updateID = 'id="update'.$m.''.$sl.'" class="edit'.$m.'"';
                             $deleteID = 'id="delete'.$m.''.$sl.'" class="delete'.$m.'"';
+                            $viewID = 'id="view'.$m.''.$sl.'" class="view'.$m.'"';
+
                             ?>
                             <tbody>
                             <tr>
@@ -70,6 +74,12 @@
                                     <div class="checkbox checkbox-success text-center">
                                         <?php echo form_checkbox('delete['.$m.']['.$sl.'][]', '1', null, $deleteID); ?>
                                         <label for="delete<?php echo $m ?><?php echo $sl ?>"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="checkbox checkbox-success text-center">
+                                        <?php echo form_checkbox('view['.$m.']['.$sl.'][]', '1', null, $viewID); ?>
+                                        <label for="view<?php echo $m ?><?php echo $sl ?>"></label>
                                     </div>
                                 </td>
                             </tr>

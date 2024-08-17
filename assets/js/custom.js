@@ -837,6 +837,24 @@ function checkalldelete(sl){
 
 }
 
+"use strict";
+function checkallview(sl){
+
+   $("#checkAllview"+sl).change(function(){
+     var checked = $(this).is(':checked');
+     if(checked){
+       $(".view"+sl).each(function(){
+         $(this).prop("checked",true);
+       });
+     }else{
+       $(".view"+sl).each(function(){
+         $(this).prop("checked",false);
+       });
+     }
+   });
+
+}
+
  "use strict";
   function userRole(id){
       var base_url = $("#base_url").val();

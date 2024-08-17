@@ -30,7 +30,9 @@ class Auth_model extends CI_Model {
             role_permission.create, 
             role_permission.read, 
             role_permission.update, 
-            role_permission.delete
+            role_permission.delete,
+            role_permission.view
+
             ")
             ->from('role_permission')
             ->join('sub_module', 'sub_module.id = role_permission.fk_module_id', 'full')
@@ -64,7 +66,9 @@ class Auth_model extends CI_Model {
                     IF(SUM(role_permission.create) >= 1,1,0) AS 'create', 
                     IF(SUM(role_permission.read) >= 1,1,0) AS 'read', 
                     IF(SUM(role_permission.update) >= 1,1,0) AS 'update', 
-                    IF(SUM(role_permission.delete) >= 1,1,0) AS 'delete'
+                    IF(SUM(role_permission.delete) >= 1,1,0) AS 'delete',
+                    IF(SUM(role_permission.view) >= 1,1,0) AS 'view'
+
                 ")
                 ->from('role_permission')
                 ->join('sub_module', 'sub_module.id = role_permission.fk_module_id', 'full')
@@ -88,7 +92,9 @@ class Auth_model extends CI_Model {
             role_permission.create, 
             role_permission.read, 
             role_permission.update, 
-            role_permission.delete
+            role_permission.delete,
+             role_permission.view
+
             ")
             ->from('role_permission')
             ->join('sub_module', 'sub_module.id = role_permission.fk_module_id', 0)

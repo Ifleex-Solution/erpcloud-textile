@@ -33,6 +33,8 @@
                         <th><?php echo display('read');?> (<input type="checkbox" onclick="checkallread(<?php echo $m?>)" id="checkAllread<?php echo $m?>"  name="" > all)</th>
                         <th><?php echo display('update');?> (<input type="checkbox" onclick="checkalledit(<?php echo $m?>)" id="checkAlledit<?php echo $m?>"  name="" > all)</th>
                         <th><?php echo display('delete');?> (<input type="checkbox" onclick="checkalldelete(<?php echo $m?>)" id="checkAlldelete<?php echo $m?>"  name="" > all)</th>
+                        <th><?php echo "View";?> (<input type="checkbox" onclick="checkallview(<?php echo $m?>)" id="checkAllview<?php echo $m?>"  name="" > all)</th>
+
                     </tr>
                     </thead>
                     
@@ -50,6 +52,8 @@
                             $readID   = 'id="read'.$m.''.$sl.'" class="read'.$m.'"';
                             $updateID = 'id="update'.$m.''.$sl.'" class="edit'.$m.'"';
                             $deleteID = 'id="delete'.$m.''.$sl.'" class="delete'.$m.'"';
+                            $viewId = 'id="view'.$m.''.$sl.'" class="view'.$m.'"';
+
                             ?>
                             <tbody>
                             <tr>
@@ -80,6 +84,12 @@
                                     <div class="checkbox checkbox-success text-center">
                                         <input type="checkbox" name="delete[<?php echo $m?>][<?php echo $sl ?>][]" class="delete<?php echo $m?>" value="1" <?php echo ((@$ck_data->delete==1)?"checked":null) ?> id="delete[<?php echo $m?>]<?php echo $sl?>">
                                         <label for="delete[<?php echo $m ?>]<?php echo $sl ?>"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="checkbox checkbox-success text-center">
+                                        <input type="checkbox" name="view[<?php echo $m?>][<?php echo $sl ?>][]" class="view<?php echo $m?>" value="1" <?php echo ((@$ck_data->view==1)?"checked":null) ?> id="view[<?php echo $m?>]<?php echo $sl?>">
+                                        <label for="view[<?php echo $m ?>]<?php echo $sl ?>"></label>
                                     </div>
                                 </td>
                             </tr>

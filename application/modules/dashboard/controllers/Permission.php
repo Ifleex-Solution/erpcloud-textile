@@ -22,7 +22,6 @@ class Permission extends MX_Controller
 
 
     public function create()
-
     {
         $data = array(
             'type' => $this->input->post('role_id',true),
@@ -35,6 +34,8 @@ class Permission extends MX_Controller
         $read         = $this->input->post('read',true);
         $update       = $this->input->post('update',true);
         $delete       = $this->input->post('delete',true);
+        $view       = $this->input->post('view',true);
+
 
 
         $new_array = array();
@@ -48,6 +49,7 @@ class Permission extends MX_Controller
                         'read'         => (!empty($read[$m][$i][$j]) ? $read[$m][$i][$j] : 0),
                         'update'       => (!empty($update[$m][$i][$j]) ? $update[$m][$i][$j] : 0),
                         'delete'       => (!empty($delete[$m][$i][$j]) ? $delete[$m][$i][$j] : 0),
+                        'view'       => (!empty($view[$m][$i][$j]) ? $view[$m][$i][$j] : 0),
                     );
                     array_push($new_array, $dataStore);
                 }
@@ -225,6 +227,8 @@ class Permission extends MX_Controller
         $read         = $this->input->post('read',true);
         $update       = $this->input->post('update',true);
         $delete       = $this->input->post('delete',true);
+        $view       = $this->input->post('view',true);
+
 
 
         $new_array = array();
@@ -238,6 +242,7 @@ class Permission extends MX_Controller
                         'read'         => (!empty($read[$m][$i][$j]) ? $read[$m][$i][$j] : 0),
                         'update'       => (!empty($update[$m][$i][$j]) ? $update[$m][$i][$j] : 0),
                         'delete'       => (!empty($delete[$m][$i][$j]) ? $delete[$m][$i][$j] : 0),
+                        'view'       => (!empty($view[$m][$i][$j]) ? $view[$m][$i][$j] : 0),
                     );
                     array_push($new_array, $dataStore);
                 }

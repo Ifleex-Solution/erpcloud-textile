@@ -114,7 +114,7 @@ class Hrm_model extends CI_Model {
       public function employee_list(){
         $this->db->select('a.*,b.designation');
         $this->db->from('employee_history a');
-        $this->db->join('designation b','a.designation = b.id');
+        $this->db->join('designation b', 'a.designation = b.id', 'left');
         $this->db->order_by('a.id', 'DESC');
         $query = $this->db->get();
 

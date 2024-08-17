@@ -27,17 +27,7 @@
      <?php }?>
 
      
-        <?php if($this->permission1->method('customer_receive','create')->access()){ ?>
-           <a href="<?php echo base_url('customer_receive')?>" class="btn btn-success btn-outline"><i class="fa fa-money"></i> <?php echo display('customer_receive')?></a>
-       <?php } ?>
-      
-  <?php if($this->permission1->method('supplier_payment','create')->access()){ ?>
-          <a href="<?php echo base_url('supplier_payment')?>" class="btn btn-success btn-outline"><i class="fa fa-money" aria-hidden="true"></i> <?php echo display('supplier_payment')?></a>
-      <?php } ?>
-
-<?php if($this->permission1->method('add_purchase','create')->access()){ ?>
-          <a href="<?php echo base_url('add_purchase')?>" class="btn btn-success btn-outline"><i class="ti-shopping-cart"></i> <?php echo display('purchase') ?></a>
- <?php } ?>
+    
 </span>
 
     <div class="navbar-custom-menu">

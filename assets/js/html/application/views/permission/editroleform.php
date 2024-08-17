@@ -87,6 +87,8 @@
                         <th><?php echo display('read');?></th>
                         <th><?php echo display('update');?></th>
                         <th><?php echo display('delete');?></th>
+                        <th><?php "View";?></th>
+
                     </tr>
                     </thead>
                     <?php $sl = 0 ?>
@@ -102,6 +104,8 @@
                             $readID   = 'id="read'.$m.''.$sl.'"';
                             $updateID = 'id="update'.$m.''.$sl.'"';
                             $deleteID = 'id="delete'.$m.''.$sl.'"';
+                            $viewID = 'id="view'.$m.''.$sl.'"';
+
                             ?>
                             <tbody>
                             <tr>
@@ -132,6 +136,12 @@
                                     <div class="checkbox checkbox-success text-center">
                                         <input type="checkbox" name="delete[<?php echo $m?>][<?php echo $sl ?>][]" value="1" <?php echo ((@$ck_data->delete==1)?"checked":null) ?> id="delete[<?php echo $m?>]<?php echo $sl?>">
                                         <label for="delete[<?php echo $m ?>]<?php echo $sl ?>"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="checkbox checkbox-success text-center">
+                                        <input type="checkbox" name="view[<?php echo $m?>][<?php echo $sl ?>][]" value="1" <?php echo ((@$ck_data->view==1)?"checked":null) ?> id="view[<?php echo $m?>]<?php echo $sl?>">
+                                        <label for="view[<?php echo $m ?>]<?php echo $sl ?>"></label>
                                     </div>
                                 </td>
                             </tr>
