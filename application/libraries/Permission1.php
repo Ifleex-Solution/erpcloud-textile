@@ -98,6 +98,17 @@ class Permission1
 		} 
 		return $this;
 	}
+
+	public function view()
+	{   
+		if ($this->checkMethod($this->module, 'view')) {
+			$this->permission = true;
+		} else {
+			$this->permission = false;
+		} 
+		return $this;
+	}
+	 
 	 
 	protected function checkModule($module = null)
 	{ 

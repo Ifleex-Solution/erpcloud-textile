@@ -17,7 +17,9 @@ class Invoice extends MX_Controller
         $timezone = $this->db->select('timezone')->from('web_setting')->get()->row();
         date_default_timezone_set($timezone->timezone);
         $this->load->model(array(
-            'invoice_model', 'customer/customer_model', 'account/Accounts_model'
+            'invoice_model',
+            'customer/customer_model',
+            'account/Accounts_model'
         ));
         if (!$this->session->userdata('isLogIn'))
             redirect('login');
@@ -91,7 +93,11 @@ class Invoice extends MX_Controller
 
     public function bdtask_invoice_details($invoice_id = null)
     {
-        $invoice_detail     = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
+        // $invoice_detail     = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
+        $invoice_array = explode("q", $invoice_id);
+        $invoice_detail = $invoice_array[1] == "A" ? $this->invoice_model->retrieve_invoice_html_data($invoice_array[0]) :
+            $this->invoice_model->retrieve_empinvoice_html_data($invoice_array[0]);
+
         $taxfield = $this->db->select('*')
             ->from('tax_settings')
             ->where('is_show', 1)
@@ -160,13 +166,11 @@ class Invoice extends MX_Controller
             'invoice_id'        => $invoice_detail[0]['invoice_id'],
 
             'invoice_no'        => $invoice_detail[0]['invoice'],
-            'customer_name'     => $invoice_detail[0]['customer_name'],
-            'customer_address'  => $invoice_detail[0]['customer_address'],
-            'customer_mobile'   => $invoice_detail[0]['customer_mobile'],
-            'customer_email'    => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'        => $invoice_detail[0]['final_date'],
-            'email_address'     => $invoice_detail[0]['email_address'],
-            'contact'           => $invoice_detail[0]['contact'],
             'invoice_details'   => $invoice_detail[0]['invoice_details'],
             'total_amount'      => number_format($invoice_detail[0]['total_amount'], 2, '.', ','),
             'subTotal_quantity' => $subTotal_quantity,
@@ -268,13 +272,11 @@ class Invoice extends MX_Controller
             'title'             => display('invoice_details'),
             'invoice_id'        => $invoice_detail[0]['invoice_id'],
             'invoice_no'        => $invoice_detail[0]['invoice'],
-            'customer_name'     => $invoice_detail[0]['customer_name'],
-            'customer_address'  => $invoice_detail[0]['customer_address'],
-            'customer_mobile'   => $invoice_detail[0]['customer_mobile'],
-            'customer_email'    => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'        => $invoice_detail[0]['final_date'],
-            'email_address'     => $invoice_detail[0]['email_address'],
-            'contact'           => $invoice_detail[0]['contact'],
             'invoice_details'   => $invoice_detail[0]['invoice_details'],
             'total_amount'      => number_format($invoice_detail[0]['total_amount'], 2, '.', ','),
             'subTotal_quantity' => $subTotal_quantity,
@@ -309,7 +311,11 @@ class Invoice extends MX_Controller
 
     public function bdtask_invoice_pad_print($invoice_id)
     {
-        $invoice_detail = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
+       // $invoice_detail = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
+
+       $invoice_array = explode("q", $invoice_id);
+       $invoice_detail = $invoice_array[1] == "A" ? $this->invoice_model->retrieve_invoice_html_data($invoice_array[0]) :
+           $this->invoice_model->retrieve_empinvoice_html_data($invoice_array[0]);
 
         $taxfield = $this->db->select('*')
             ->from('tax_settings')
@@ -377,10 +383,10 @@ class Invoice extends MX_Controller
             'title'            => display('pad_print'),
             'invoice_id'       => $invoice_detail[0]['invoice_id'],
             'invoice_no'       => $invoice_detail[0]['invoice'],
-            'customer_name'    => $invoice_detail[0]['customer_name'],
-            'customer_address' => $invoice_detail[0]['customer_address'],
-            'customer_mobile'  => $invoice_detail[0]['customer_mobile'],
-            'customer_email'   => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'       => $invoice_detail[0]['final_date'],
             'print_setting'    => $this->invoice_model->bdtask_print_settingdata(),
             'invoice_details'  => $invoice_detail[0]['invoice_details'],
@@ -420,7 +426,17 @@ class Invoice extends MX_Controller
 
     public function bdtask_invoice_pos_print($invoice_id = null)
     {
-        $invoice_detail = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
+        //$invoice_detail = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
+        $logFilePath = 'logfile.log';
+        $fileHandle = fopen($logFilePath, 'a');
+        fwrite($fileHandle,"\nCame here ");
+        fclose($fileHandle);
+       
+
+        $invoice_array = explode("q", $invoice_id);
+        $invoice_detail = $invoice_array[1] == "A" ? $this->invoice_model->retrieve_invoice_html_data($invoice_array[0]) :
+            $this->invoice_model->retrieve_empinvoice_html_data($invoice_array[0]);
+
         $taxfield = $this->db->select('*')
             ->from('tax_settings')
             ->where('is_show', 1)
@@ -477,7 +493,7 @@ class Invoice extends MX_Controller
             }
         }
 
-        $payment_method_list = $this->invoice_model->invoice_method_wise_balance($invoice_id);
+        $payment_method_list = $this->invoice_model->invoice_method_wise_balance2($invoice_id,$invoice_array[1]);
         $terms_list = $this->db->select('*')->from('seles_termscondi')->where('status', 1)->get()->result();
         $totalbal = $invoice_detail[0]['total_amount'] + $invoice_detail[0]['prevous_due'];
         $user_id  = $invoice_detail[0]['sales_by'];
@@ -486,10 +502,10 @@ class Invoice extends MX_Controller
             'title'                => display('pos_print'),
             'invoice_id'           => $invoice_detail[0]['invoice_id'],
             'invoice_no'           => $invoice_detail[0]['invoice'],
-            'customer_name'        => $invoice_detail[0]['customer_name'],
-            'customer_address'     => $invoice_detail[0]['customer_address'],
-            'customer_mobile'      => $invoice_detail[0]['customer_mobile'],
-            'customer_email'       => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'           => $invoice_detail[0]['final_date'],
             'invoice_details'      => $invoice_detail[0]['invoice_details'],
             'grand_total'          => $invoice_detail[0]['total_amount'],
@@ -584,10 +600,10 @@ class Invoice extends MX_Controller
             'title'                => display('pos_print'),
             'invoice_id'           => $invoice_detail[0]['invoice_id'],
             'invoice_no'           => $invoice_detail[0]['invoice'],
-            'customer_name'        => $invoice_detail[0]['customer_name'],
-            'customer_address'     => $invoice_detail[0]['customer_address'],
-            'customer_mobile'      => $invoice_detail[0]['customer_mobile'],
-            'customer_email'       => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'           => $invoice_detail[0]['final_date'],
             'invoice_details'      => $invoice_detail[0]['invoice_details'],
             'total_amount'         => number_format($totalbal, 2, '.', ','),
@@ -675,10 +691,10 @@ class Invoice extends MX_Controller
             'invoice_id'        => $invoice_detail[0]['invoice_id'],
             'customer_info'     => $invoice_detail,
             'invoice_no'        => $invoice_detail[0]['invoice'],
-            'customer_name'     => $invoice_detail[0]['customer_name'],
-            'customer_address'  => $invoice_detail[0]['customer_address'],
-            'customer_mobile'   => $invoice_detail[0]['customer_mobile'],
-            'customer_email'    => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'        => $invoice_detail[0]['final_date'],
             'invoice_details'   => $invoice_detail[0]['invoice_details'],
             'total_amount'      => number_format($invoice_detail[0]['total_amount'] + $invoice_detail[0]['prevous_due'], 2, '.', ','),
@@ -761,13 +777,13 @@ class Invoice extends MX_Controller
                         }
                     }
                     if ($normal == 1) {
-                        $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($invoice_id);
+                        $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($invoice_id, '');
                         $data['details'] = $this->load->view('invoice/invoice_html_manual', $printdata, true);
                     } else {
-                        $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($invoice_id);
+                        $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($invoice_id, '');
                         $data['details'] = $this->load->view('invoice/pos_print', $printdata, true);
                     }
-                    $base_url = base_url(); 
+                    $base_url = base_url();
 
                     echo '<script type="text/javascript">
                     alert("Invoice details saved successfully");
@@ -782,8 +798,64 @@ class Invoice extends MX_Controller
                 $data['exception'] = validation_errors();
             }
         }
-       
-       
+    }
+
+    public function bdtask_manual_possales_insert()
+    {
+        // $this->form_validation->set_rules('customer_id', display('customer_name'), 'required|max_length[15]');
+        $this->form_validation->set_rules('product_id[]', display('product'), 'required|max_length[20]');
+        $this->form_validation->set_rules('multipaytype[]', display('payment_type'), 'required');
+        $this->form_validation->set_rules('product_quantity[]', display('quantity'), 'required|max_length[20]');
+        $this->form_validation->set_rules('product_rate[]', display('rate'), 'required|max_length[20]');
+        $normal = $this->input->post('is_normal');
+
+        $finyear = $this->input->post('finyear', true);
+        if ($finyear <= 0) {
+            $data['status'] = false;
+            $data['exception'] = 'Please Create Financial Year First From Accounts > Financial Year.';
+        } else {
+            if ($this->form_validation->run() === true) {
+                $empid = $this->input->post('empid');
+                $incremented_id = $empid == "god" ? $this->number_emp_generator() : $this->number_generator();
+                $invoice_id     = $this->invoice_model->invoice_posentry($incremented_id);
+                if (!empty($invoice_id)) {
+                    $setting_data = $this->db->select('is_autoapprove_v')->from('web_setting')->where('setting_id', 1)->get()->result_array();
+                    if ($setting_data[0]['is_autoapprove_v'] == 1) {
+
+                        $new = $this->autoapprove($invoice_id);
+                    }
+
+                    $data['status']     = true;
+                    $data['invoice_id'] = $invoice_id;
+                    $data['message']    = display('save_successfully');
+                    $mailsetting        = $this->db->select('*')->from('email_config')->get()->result_array();
+
+                    if ($mailsetting[0]['isinvoice'] == 1) {
+                        $mail  = $this->invoice_pdf_generate($invoice_id);
+                        if ($mail == 0) {
+                            $data['exception'] = $this->session->set_userdata(array('error_message' => display('please_config_your_mail_setting')));
+                        }
+                    }
+                    // if ($normal == 1) {
+                    //     $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($invoice_id, $empid);
+                    //     $data['details'] = $this->load->view('invoice/invoice_html_manual', $printdata, true);
+                    // } else {
+                       
+                    // }
+                    $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($invoice_id, $empid);
+                    $data['details'] = $this->load->view('invoice/pos_print', $printdata, true);
+                    // $base_url = base_url();
+
+                    echo json_encode($data);
+                } else {
+                    $data['status']    = false;
+                    $data['exception'] = 'Please Try Again';
+                }
+            } else {
+                $data['status']    = false;
+                $data['exception'] = validation_errors();
+            }
+        }
     }
 
     public function autoapprove($invoice_id)
@@ -842,9 +914,11 @@ class Invoice extends MX_Controller
 
     public function bdtask_edit_invoice($invoice_id = null)
     {
-
-        $invoice_detail = $this->invoice_model->retrieve_invoice_editdata($invoice_id);
+        $invoice_array = explode("q", $invoice_id);
+        $invoice_detail = $invoice_array[1] == "A" ? $this->invoice_model->retrieve_invoice_editdata($invoice_array[0]) :
+            $this->invoice_model->retrieve_empinvoice_editdata($invoice_array[0]);
         $vat_tax_info   = $this->invoice_model->vat_tax_setting();
+
         if ($invoice_detail[0]['is_dynamic'] == 1) {
             if ($invoice_detail[0]['is_dynamic'] != $vat_tax_info->dynamic_tax) {
 
@@ -859,7 +933,7 @@ class Invoice extends MX_Controller
             }
         }
 
-        $taxinfo        = $this->invoice_model->invoice_taxinfo($invoice_id);
+        $taxinfo        = $this->invoice_model->invoice_taxinfo($invoice_array[0]);
         $taxfield       = $this->db->select('tax_name,default_value')
             ->from('tax_settings')
             ->get()
@@ -880,13 +954,15 @@ class Invoice extends MX_Controller
             ->from('acc_vaucher')
             ->where('referenceNo', $invoice_detail[0]['invoice'])
             ->where('Vtype', 'CV')
+            ->where('type', $invoice_array[1])
             ->get()->result();
 
         $data = array(
             'title'           => display('invoice_edit'),
+            'type'            => $invoice_array[1],
             'dbinv_id'        => $invoice_detail[0]['dbinv_id'],
             'invoice_id'      => $invoice_detail[0]['invoice_id'],
-            'customer_id'     => $invoice_detail[0]['customer_id'],
+            'employee_id'     => $invoice_detail[0]['employee_id'],
             'customer_name'   => $invoice_detail[0]['customer_name'],
             'date'            => $invoice_detail[0]['date'],
             'invoice_details' => $invoice_detail[0]['invoice_details'],
@@ -915,19 +991,13 @@ class Invoice extends MX_Controller
         $data['all_pmethodwith_cr'] = $this->invoice_model->pmethod_dropdown();
         $data['module']     = "invoice";
         $vatortax              = $this->invoice_model->vat_tax_setting();
-        if ($vatortax->fixed_tax == 1) {
-
-            $data['page']       = "edit_invoice_form";
-        }
-        if ($vatortax->dynamic_tax == 1) {
-            $data['page']          = "edit_invoice_form_dynamic";
-        }
+        $data['page']       = "edit_invoice_form";
         echo modules::run('template/layout', $data);
     }
 
     public function bdtask_update_invoice()
     {
-        $this->form_validation->set_rules('customer_id', display('customer_name'), 'required|max_length[15]');
+        // $this->form_validation->set_rules('customer_id', display('customer_name'), 'required|max_length[15]');
         $this->form_validation->set_rules('invoice_no', display('invoice_no'), 'required|max_length[20]');
         $this->form_validation->set_rules('multipaytype[]', display('payment_type'), 'required');
         $this->form_validation->set_rules('product_id[]', display('product'), 'required|max_length[20]');
@@ -1034,10 +1104,10 @@ class Invoice extends MX_Controller
             'invoice_id'        => $invoice_detail[0]['invoice_id'],
             'customer_info'     => $invoice_detail,
             'invoice_no'        => $invoice_detail[0]['invoice'],
-            'customer_name'     => $invoice_detail[0]['customer_name'],
-            'customer_address'  => $invoice_detail[0]['customer_address'],
-            'customer_mobile'   => $invoice_detail[0]['customer_mobile'],
-            'customer_email'    => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'        => $invoice_detail[0]['final_date'],
             'invoice_details'   => $invoice_detail[0]['invoice_details'],
             'total_amount'      => number_format($invoice_detail[0]['total_amount'] + $invoice_detail[0]['prevous_due'], 2, '.', ','),
@@ -1178,6 +1248,17 @@ class Invoice extends MX_Controller
     }
 
 
+    public function getAllEmployees()
+    {
+        $this->db->select('id,first_name,last_name');
+        $this->db->from('employee_history');
+        $this->db->order_by('first_name', 'ASC');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        echo json_encode($result);
+    }
+
+
 
     public function bdtask_gui_pos()
     {
@@ -1206,15 +1287,30 @@ class Invoice extends MX_Controller
         $data['all_pmethod']   = $this->invoice_model->pmethod_dropdown();
         $data['module']        = "invoice";
         $vatortax              = $this->invoice_model->vat_tax_setting();
-        if ($vatortax->fixed_tax == 1) {
-            $data['page']      = "gui_pos_invoice";
-            $data['tax_type']  = "fixed";
-        }
-        if ($vatortax->dynamic_tax == 1) {
-            $data['page']      = "gui_pos_invoice_dynamic";
-            $data['tax_type']  = "dynamic";
-        }
+        // if ($vatortax->fixed_tax == 1) {
+
+        // }
+        // if ($vatortax->dynamic_tax == 1) {
+        //     $data['page']      = "gui_pos_invoice_dynamic";
+        //     $data['tax_type']  = "dynamic";
+        // }
+        $data['page']      = "gui_pos_invoice";
+        $data['tax_type']  = "fixed";
         echo modules::run('template/layout', $data);
+    }
+
+    public function get_todays_invoice()
+    {
+        $empid = $this->input->get('empid');
+        if ($empid == "god") {
+            $todays_invoice = $this->invoice_model->emp_todays_invoice();
+            echo json_encode($todays_invoice);
+        } else {
+
+
+            $todays_invoice = $this->invoice_model->todays_invoice();
+            echo json_encode($todays_invoice);
+        }
     }
 
 
@@ -1296,7 +1392,7 @@ class Invoice extends MX_Controller
                 $html .= "No Serial Found !";
             } else {
                 // Select option created for product
-                $html .= "<select name=\"serial_no[]\"   class=\"serial_no_1 form-control\" required onchange=\"invoice_product_batch('" . $product_details->product_id . "')\" id=\"serial_no_" . $product_details->product_id . "\">";
+                $html .= "<select name=\"serial_no[]\"   class=\"serial_no_1 form-control\"  onchange=\"invoice_product_batch('" . $product_details->product_id . "')\" id=\"serial_no_" . $product_details->product_id . "\">";
                 $html .= "<option value=''>" . display('select_one') . "</option>";
                 foreach ($pur_product_batch as $p_batch) {
 
@@ -1317,10 +1413,6 @@ class Invoice extends MX_Controller
                             <input type=\"text\" name=\"product_name\" onkeypress=\"invoice_productList('" . $product_details->product_id . "');\" class=\"form-control productSelection \" value='" . $product_details->product_name . "- (" . $product_details->product_model . ")" . "' placeholder='" . display('product_name') . "' required=\"\"  tabindex=\"\" readonly>
 
                             <input type=\"hidden\" class=\"form-control autocomplete_hidden_value product_id_" . $product_details->product_id . "\" name=\"product_id[]\" id=\"SchoolHiddenId_" . $product_details->product_id . "\" value = \"$product_details->product_id\"/>
-                        </td>
-                        <td>" . $html . "</td>
-                        <td>
-                            <input type=\"text\" name=\"available_quantity[]\" class=\"form-control text-right available_quantity_" . $product_details->product_id . "\" value='' readonly=\"\" id=\"available_quantity_" . $product_details->product_id . "\"/>
                         </td>
                         <td>
                             <input type=\"text\" name=\"product_quantity[]\" onkeyup=\"quantity_calculate('" . $product_details->product_id . "');\" onchange=\"quantity_calculate('" . $product_details->product_id . "');\" class=\"total_qntt_" . $product_details->product_id . " form-control text-right\" id=\"total_qntt_" . $product_details->product_id . "\" placeholder=\"0.00\" min=\"0\" value='" . $qty . "' required=\"required\"/>
@@ -1614,10 +1706,10 @@ class Invoice extends MX_Controller
             'title'             => display('invoice_details'),
             'invoice_id'        => $invoice_detail[0]['invoice_id'],
             'invoice_no'        => $invoice_detail[0]['invoice'],
-            'customer_name'     => $invoice_detail[0]['customer_name'],
-            'customer_address'  => $invoice_detail[0]['customer_address'],
-            'customer_mobile'   => $invoice_detail[0]['customer_mobile'],
-            'customer_email'    => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'        => $invoice_detail[0]['final_date'],
             'invoice_details'   => $invoice_detail[0]['invoice_details'],
             'total_amount'      => number_format($invoice_detail[0]['total_amount'] + $invoice_detail[0]['prevous_due'], 2, '.', ','),
@@ -1652,6 +1744,20 @@ class Invoice extends MX_Controller
     {
         $this->db->select_max('invoice', 'invoice_no');
         $query      = $this->db->get('invoice');
+        $result     = $query->result_array();
+        $invoice_no = $result[0]['invoice_no'];
+        if ($invoice_no != '') {
+            $invoice_no = $invoice_no + 1;
+        } else {
+            $invoice_no = 1000;
+        }
+        return $invoice_no;
+    }
+
+    public function number_emp_generator()
+    {
+        $this->db->select_max('invoice', 'invoice_no');
+        $query      = $this->db->get('emp');
         $result     = $query->result_array();
         $invoice_no = $result[0]['invoice_no'];
         if ($invoice_no != '') {
@@ -1866,10 +1972,10 @@ class Invoice extends MX_Controller
             'title'             => display('invoice_details'),
             'invoice_id'        => $invoice_detail[0]['invoice_id'],
             'invoice_no'        => $invoice_detail[0]['invoice'],
-            'customer_name'     => $invoice_detail[0]['customer_name'],
-            'customer_address'  => $invoice_detail[0]['customer_address'],
-            'customer_mobile'   => $invoice_detail[0]['customer_mobile'],
-            'customer_email'    => $invoice_detail[0]['customer_email'],
+            'first_name'     => $invoice_detail[0]['first_name'],
+            'last_name'  => $invoice_detail[0]['last_name'],
+            'phone'   => $invoice_detail[0]['phone'],
+            'email'    => $invoice_detail[0]['email'],
             'final_date'        => $invoice_detail[0]['final_date'],
             'invoice_details'   => $invoice_detail[0]['invoice_details'],
             'total_amount'      => number_format($invoice_detail[0]['total_amount'] + $invoice_detail[0]['prevous_due'], 2, '.', ','),

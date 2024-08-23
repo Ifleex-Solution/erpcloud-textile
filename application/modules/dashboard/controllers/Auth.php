@@ -74,7 +74,8 @@ class Auth extends MX_Controller {
                     'create' => $value->create,
                     'read'   => $value->read,
                     'update' => $value->update,
-                    'delete' => $value->delete
+                    'delete' => $value->delete,
+                    'view' => $value->view
                 );
             }
 

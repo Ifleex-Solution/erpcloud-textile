@@ -45,8 +45,7 @@
                             <?php $web_setting = $this->db->select("*")->from("web_setting")->get()->row();
                             if ($web_setting->is_qr == 1) { ?>
                             <div class="print-qr">
-                                <?php  $text = base64_encode(display('invoice_no').': '.$invoice_no.' '.display('customer_name').': '. $customer_name);
-                                ?>
+                              
                                 <img src="http://chart.apis.google.com/chart?cht=qr&chs=250x250&chld=L|4&chl=<?php echo $text?>"
                                     alt="">
                             </div>
@@ -77,34 +76,7 @@
 
                             <span class="label label-success-outline m-r-15"><?php echo  "Delivery To" ?></span>
 
-                            <address style="margin-top: 10px;" class="">
-                                <strong class=""><?php echo $customer_name?> </strong><br>
-                                <?php if ($customer_address) { ?>
-                                <?php echo $customer_address;?>
-                                <br>
-                                <?php } ?>
-                                <?php if ($customer_mobile) { ?>
-                                <abbr class="font-bold"><?php echo display('mobile') ?>: </abbr>
-                                <?php echo $customer_mobile;?>
-                                <br>
-                                <?php }  ?>
-                                <?php  if ($customer_email){ ?>
-                                <abbr class="font-bold"><?php echo display('email') ?>: </abbr>
-                                <?php echo $customer_email;?>
-                                <br>
-                                <?php } ?>
-                                <?php if (!empty($email_address)) {?>
-                                <abbr class="font-bold"><?php echo display('vat_no') ?>: </abbr>
-                                <?php echo $email_address?>
-                                <br>
-                                <?php } ?>
-                                <?php if (!empty($contact)) {?>
-                                <abbr class="font-bold"><?php echo display('cr_no') ?>: </abbr>
-                                <?php echo $contact?>
-                                <?php } ?>
-
-
-                            </address>
+                            
                         </div>
                     </div>
 

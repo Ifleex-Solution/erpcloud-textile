@@ -11,7 +11,7 @@
                             </div> 
                                <address >  
 
-                                        <b class="text-right"><?php echo display('customer_name').' : '.$customer_name?> </b><b class="pad-print-customername"><?php echo display('invoice_no').':'. $invoice_no?> </b>
+                                        <b class="pad-print-customername"><?php echo display('invoice_no').':'. $invoice_no?> </b>
                                         <b class="padprint-date"><?php echo display('date').': '. $final_date?> </b>
                                     </address>
 

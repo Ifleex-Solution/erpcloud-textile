@@ -43,16 +43,7 @@ body {
                                     <th style="text-align: left;"><?php echo display('invoice_no');?></th>
                                     <th style="text-align: right;"><?php echo $invoice_no;?></th>
                                 </tr>
-                                <tr>
-                                    <th style="text-align: left;"><?php echo display('customer');?></th>
-                                    <th style="text-align: right;"><?php echo $customer_name; ?></th>
-                                </tr>
-                                <?php if ($customer_mobile != '') { ?>
-                                <tr>
-                                    <th style="text-align: left;"><?php echo display('phone');?></th>
-                                    <th style="text-align: right;"><?php echo $customer_mobile; ?></th>
-                                </tr>
-                                <?php }?>
+                              
 
                             </tbody>
                         </table>
@@ -243,7 +234,7 @@ body {
                         <?php $web_setting = $this->db->select("*")->from("web_setting")->get()->row();
                             if ($web_setting->is_qr == 1) { ?>
                         <div style="text-align: center;">
-                            <?php  $text = base64_encode(display('invoice_no').': '.$invoice_no.' '.display('customer_name').': '. $customer_name);
+                            <?php  $text = base64_encode(display('invoice_no').': '.$invoice_no.' ');
                             ?>
                             <img src="http://chart.apis.google.com/chart?cht=qr&chs=250x250&chld=L|4&chl=<?php echo $text?>"
                                 alt="">

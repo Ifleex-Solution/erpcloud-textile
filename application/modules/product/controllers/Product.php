@@ -230,8 +230,7 @@ class Product extends MX_Controller
                 $postData[$value] = (!empty($this->input->post($value)) ? $this->input->post($value) : 0) / 100;
             }
         }
-        $logFilePath = 'logfile.log';
-        $fileHandle = fopen($logFilePath, 'a');
+
         #-------------------------------#
         if ($this->form_validation->run() === true) {
 
@@ -245,23 +244,23 @@ class Product extends MX_Controller
 
                     // }
                     #set success message
-                    $supp_prd = array(
-                        'product_id'     => $product_id,
-                        'supplier_id'    => 1,
-                        'supplier_price' => $sup_price,
-                        'products_model' => $product_model,
-                    );
+                    // $supp_prd = array(
+                    //     'product_id'     => $product_id,
+                    //     'supplier_id'    => 1,
+                    //     'supplier_price' => $sup_price,
+                    //     'products_model' => $product_model,
+                    // );
 
-                    $this->db->insert('supplier_product', $supp_prd);
+                    // $this->db->insert('supplier_product', $supp_prd);
 
 
-                    $data1 = array(
-                        'product_id'         => $product_id,
-                        'quantity'           => $this->input->post('opening_stock', TRUE),
-                        'batch_id'           => $this->input->post('opening_batch', TRUE),
-                        'status'             => 1
-                    );
-                    $this->db->insert('product_purchase_details', $data1);
+                    // $data1 = array(
+                    //     'product_id'         => $product_id,
+                    //     'quantity'           => $this->input->post('opening_stock', TRUE),
+                    //     'batch_id'           => $this->input->post('opening_batch', TRUE),
+                    //     'status'             => 1
+                    // );
+                    // $this->db->insert('product_purchase_details', $data1);
 
                     $this->session->set_flashdata('message', display('save_successfully'));
                 } else {
@@ -289,15 +288,15 @@ class Product extends MX_Controller
 
                     // $this->db->insert('supplier_product', $supp_prd);
 
-                    $supp_prd = array(
-                        'product_id'     =>$id,
-                        'supplier_id'    => 1,
-                        'supplier_price' => $sup_price,
-                        'products_model' => $product_model,
-                    );
+                    // $supp_prd = array(
+                    //     'product_id'     =>$id,
+                    //     'supplier_id'    => 1,
+                    //     'supplier_price' => $sup_price,
+                    //     'products_model' => $product_model,
+                    // );
 
-                     $this->db->where('product_id', $id)
-                    ->update('supplier_product', $supp_prd);
+                    //  $this->db->where('product_id', $id)
+                    // ->update('supplier_product', $supp_prd);
 
                     $this->session->set_flashdata('message', display('update_successfully'));
                 } else {

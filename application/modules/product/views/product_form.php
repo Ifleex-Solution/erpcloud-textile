@@ -107,30 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    <?php if (empty($supplier_pr)) { ?>
-                        <div class="col-sm-6">
-                            <div class="form-group row">
-                                <label for="cost_price" class="col-sm-4 col-form-label"><?php echo display('cost_price') ?>
-                                </label>
-                                <div class="col-sm-8">
-                                    <input class="form-control text-right" id="cost_price" name="supplier_price" type="text" placeholder="0.00" tabindex="5" min="0">
-                                </div>
-                            </div>
-                        </div>
-                        <?php } else {
-                        foreach ($supplier_pr as $supplier_product) {
-                        ?>
-                            <div class="col-sm-6">
-                                <div class="form-group row">
-                                    <label for="cost_price" class="col-sm-4 col-form-label"><?php echo display('cost_price') ?>
-                                    </label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control text-right" id="cost_price" name="supplier_price" type="text" placeholder="0.00" tabindex="5" min="0" value="<?php echo $supplier_product['supplier_price'] ?>">
-                                    </div>
-                                </div>
-                            </div>
-                    <?php }
-                    } ?>
+                   
                     <div class="col-sm-6">
                         <div class="form-group row">
                             <label for="serial_no" class="col-sm-4 col-form-label"><?php echo display('product_details') ?> </label>
@@ -142,7 +119,7 @@
                 </div>
                 <div class="row">
 
-                    <div class="col-sm-6">
+                    <!-- <div class="col-sm-6">
                         <div class="form-group row">
                             <label for="opening_stock" class="col-sm-4 col-form-label">Opening Stock
                             </label>
@@ -159,7 +136,7 @@
                                 <input class="form-control" id="opening_batch" name="opening_batch" type="text" placeholder="Opening Batch">
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-sm-6">
                         <div class="form-group row">
                             <label for="image" class="col-sm-4 col-form-label"><?php echo display('image') ?> </label>

@@ -53,9 +53,7 @@ function addInputField_invoice(t) {
         ");' class='form-control productSelection common_product' placeholder='Product Name' id='" + a + 
         "' required tabindex='" + tab1 + "'><input type='hidden' class='common_product autocomplete_hidden_value  product_id_" + count + 
         "' name='product_id[]' id='SchoolHiddenId'/></td><td><input type='text' name='desc[]'' class='form-control text-right ' tabindex='" +
-         tab2 + "'/></td><td><select class='form-control basic-single'  onchange='invoice_product_batch(" + count + ")' id='serial_no_" + count + "' name='serial_no[]' required aria-hidden='true' tabindex='" + tab3 + 
-         "'><option></option></select></td> <td><input type='text' name='available_quantity[]' id='' class='form-control text-right common_avail_qnt available_quantity_" + 
-         count + "' value='0' readonly='readonly' /></td><td><input class='form-control text-right common_name unit_" + count + 
+         tab2 + "'/></td> <td><input class='form-control text-right common_name unit_" + count + 
          " valid' value='None' readonly='' aria-invalid='false' type='text'></td><td> <input type='text' name='product_quantity[]' value='1' required='required' onkeyup='bdtask_invoice_quantity_calculate(" + 
          count + ");' onchange='bdtask_invoice_quantity_calculate(" + count + ");' id='total_qntt_" + count + "' class='common_qnt total_qntt_" + 
          count + " form-control text-right'  placeholder='0.00' min='0' tabindex='" + tab3 + "'/></td><td><input type='text' name='product_rate[]' onkeyup='bdtask_invoice_quantity_calculate(" + 

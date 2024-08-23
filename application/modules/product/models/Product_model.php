@@ -207,14 +207,12 @@ class Product_model extends CI_Model
         ## Search 
         $searchQuery = "";
         if ($searchValue != '') {
-            $searchQuery = " (a.product_name like '%" . $searchValue . "%' or a.product_model like '%" . $searchValue . "%' or a.price like'%" . $searchValue . "%' or c.supplier_price like'%" . $searchValue . "%' or m.supplier_name like'%" . $searchValue . "%') ";
+            $searchQuery = " (a.product_name like '%" . $searchValue . "%' or a.product_model like '%" . $searchValue . "%' or a.price like'%" . $searchValue . "%' ) ";
         }
 
         ## Total number of records without filtering
         $this->db->select('count(*) as allcount');
         $this->db->from('product_information a');
-        $this->db->join('supplier_product c', 'c.product_id = a.product_id', 'left');
-        $this->db->join('supplier_information m', 'm.supplier_id = c.supplier_id', 'left');
         if ($searchValue != '')
             $this->db->where($searchQuery);
         $records = $this->db->get()->result();
@@ -223,41 +221,35 @@ class Product_model extends CI_Model
         ## Total number of record with filtering
         $this->db->select('count(*) as allcount');
         $this->db->from('product_information a');
-        $this->db->join('supplier_product c', 'c.product_id = a.product_id', 'left');
-        $this->db->join('supplier_information m', 'm.supplier_id = c.supplier_id', 'left');
         if ($searchValue != '')
             $this->db->where($searchQuery);
         $records = $this->db->get()->result();
         $totalRecordwithFilter = $records[0]->allcount;
 
         ## Fetch records
-        $this->db->select("a.*,
-                a.product_name,
-                a.product_id,
-                a.product_model,
-                a.product_vat,
-                a.image,
-                c.supplier_price,
-                c.supplier_id,
-                m.supplier_name
-                ");
+        $this->db->select("a.*, 
+                   a.product_name, 
+                   a.product_id, 
+                   a.product_model, 
+                   a.product_vat, 
+                   a.image, 
+                   ps.category_name");
         $this->db->from('product_information a');
-        $this->db->join('supplier_product c', 'c.product_id = a.product_id', 'left');
-        $this->db->join('supplier_information m', 'm.supplier_id = c.supplier_id', 'left');
+        $this->db->join('product_category ps', 'ps.category_id = a.category_id', 'inner');
         if ($searchValue != '')
             $this->db->where($searchQuery);
         $this->db->order_by($columnName, $columnSortOrder);
         $this->db->limit($rowperpage, $start);
         $records = $this->db->get()->result();
 
-   
+
 
 
         $data = array();
         $sl = 1;
 
         foreach ($records as $record) {
-         
+
 
             $button = '';
             $base_url = base_url();
@@ -282,10 +274,8 @@ class Product_model extends CI_Model
                 'sl'               => $sl,
                 'product_name'     => $product_name,
                 'product_model'    => $record->product_model,
-                'supplier_name'    => $supplier,
                 'price'            => $record->price,
-                'purchase_p'       => $record->supplier_price,
-
+                'category'         => $record->category_name,
                 'image'            => $image,
                 'button'           => $button,
 

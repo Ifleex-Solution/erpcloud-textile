@@ -27,16 +27,7 @@
                                                 </tr>
                                                 
                                                 
-                                                <tr>
-                                                    <td align="center"><b><?php echo $customer_name;?></b><br>
-                                                        <?php if ($customer_address) { ?>
-                                                            <?php echo $customer_address?><br>
-                                                        <?php } ?>
-                                                        <?php if ($customer_mobile) { ?>
-                                                            <?php echo $customer_mobile;?>
-                                                        <?php } ?>
-                                                    </td>
-                                                </tr>
+                                              
                                                 <tr>
                                                     <td align="center"><nobr>
                                                     <date>
