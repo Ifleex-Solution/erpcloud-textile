@@ -178,7 +178,25 @@ $(document).ready(function () {
   "use strict";
   var csrf_test_name = $('[name="csrf_test_name"]').val();
   var base_url = $('#base_url').val();
-  console.log(base_url + 'invoice/invoice/CheckInvoiceList')
+  $.ajax({
+    url: base_url + 'invoice/invoice/CheckInvoiceList',
+    type: 'POST', // Assuming it's a POST request, change to 'GET' if needed
+    data: {
+      fromdate: $('#from_date').val(),
+      todate: $('#to_date').val(),
+      empid: 'all',
+      csrf_test_name: csrf_test_name // Assuming csrf_test_name is defined globally
+    },
+    success: function (response) {
+      // Handle the successful response here
+      console.log(JSON.parse(response));
+      // You can process the response and update the UI accordingly
+    },
+    error: function (xhr, status, error) {
+      // Handle any errors here
+      console.error('AJAX request failed:', error);
+    }
+  });
 
   var total_invoice = $("#total_invoice").val();
   var currency = $("#currency").val();

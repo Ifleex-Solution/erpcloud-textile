@@ -57,10 +57,28 @@ class Invoice extends MX_Controller
     }
 
     public function CheckInvoiceList()
-    {
+    {  
+        $empid   = $this->input->post('empid', TRUE);
         $postData = $this->input->post();
-        $data     = $this->invoice_model->getInvoiceList($postData);
-        echo json_encode($data);
+        if ($empid == "all") {
+            $data1     = $this->invoice_model->getInvoiceListForAll($postData, "god", 1);
+            $data2 = $this->invoice_model->getInvoiceListForAll($postData, "123",  $data1['sl']);
+            $mergedData = array_merge($data1['aaData'], $data2['aaData']);
+            $totalRecordwithFilter = $data1['iTotalRecords'] + $data2['iTotalRecords'];
+            $totalRecords = $data1['iTotalDisplayRecords'] + $data2['iTotalDisplayRecords'];
+            $draw         = $postData['draw'];
+
+            $response = array(
+                "draw" => intval($draw),
+                "iTotalRecords" => $totalRecords,
+                "iTotalDisplayRecords" => $totalRecordwithFilter,
+                "aaData" =>  $mergedData
+            );
+            echo json_encode($response);
+        } else {
+            $data     = $this->invoice_model->getInvoiceList($postData, $empid, 1);
+            echo json_encode($data);
+        }
     }
 
     public function delivery_note()
@@ -311,11 +329,11 @@ class Invoice extends MX_Controller
 
     public function bdtask_invoice_pad_print($invoice_id)
     {
-       // $invoice_detail = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
+        // $invoice_detail = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
 
-       $invoice_array = explode("q", $invoice_id);
-       $invoice_detail = $invoice_array[1] == "A" ? $this->invoice_model->retrieve_invoice_html_data($invoice_array[0]) :
-           $this->invoice_model->retrieve_empinvoice_html_data($invoice_array[0]);
+        $invoice_array = explode("q", $invoice_id);
+        $invoice_detail = $invoice_array[1] == "A" ? $this->invoice_model->retrieve_invoice_html_data($invoice_array[0]) :
+            $this->invoice_model->retrieve_empinvoice_html_data($invoice_array[0]);
 
         $taxfield = $this->db->select('*')
             ->from('tax_settings')
@@ -429,9 +447,9 @@ class Invoice extends MX_Controller
         //$invoice_detail = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
         $logFilePath = 'logfile.log';
         $fileHandle = fopen($logFilePath, 'a');
-        fwrite($fileHandle,"\nCame here ");
+        fwrite($fileHandle, "\nCame here ");
         fclose($fileHandle);
-       
+
 
         $invoice_array = explode("q", $invoice_id);
         $invoice_detail = $invoice_array[1] == "A" ? $this->invoice_model->retrieve_invoice_html_data($invoice_array[0]) :
@@ -493,7 +511,7 @@ class Invoice extends MX_Controller
             }
         }
 
-        $payment_method_list = $this->invoice_model->invoice_method_wise_balance2($invoice_id,$invoice_array[1]);
+        $payment_method_list = $this->invoice_model->invoice_method_wise_balance2($invoice_id, $invoice_array[1]);
         $terms_list = $this->db->select('*')->from('seles_termscondi')->where('status', 1)->get()->result();
         $totalbal = $invoice_detail[0]['total_amount'] + $invoice_detail[0]['prevous_due'];
         $user_id  = $invoice_detail[0]['sales_by'];
@@ -840,7 +858,7 @@ class Invoice extends MX_Controller
                     //     $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($invoice_id, $empid);
                     //     $data['details'] = $this->load->view('invoice/invoice_html_manual', $printdata, true);
                     // } else {
-                       
+
                     // }
                     $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($invoice_id, $empid);
                     $data['details'] = $this->load->view('invoice/pos_print', $printdata, true);

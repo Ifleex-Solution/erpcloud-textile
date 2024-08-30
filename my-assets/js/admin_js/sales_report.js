@@ -11,7 +11,7 @@ $(document).ready(function() {
         ],
         "columnDefs": [{
                 "bSortable": false,
-                "aTargets": [0, 2, 3]
+                "aTargets": [0, 2]
             },
 
         ],
@@ -28,34 +28,34 @@ $(document).ready(function() {
         buttons: [{
             extend: "copy",
             exportOptions: {
-                columns: [0, 1, 2, 3] //Your Colume value those you want
+                columns: [0, 1, 2] //Your Colume value those you want
             },
             className: "btn-sm prints"
         }, {
             extend: "csv",
             title: "Report List",
             exportOptions: {
-                columns: [0, 1, 2, 3] //Your Colume value those you want print
+                columns: [0, 1, 2] //Your Colume value those you want print
             },
             className: "btn-sm prints"
         }, {
             extend: "excel",
             exportOptions: {
-                columns: [0, 1, 2, 3] //Your Colume value those you want print
+                columns: [0, 1, 2] //Your Colume value those you want print
             },
             title: "Report List",
             className: "btn-sm prints"
         }, {
             extend: "pdf",
             exportOptions: {
-                columns: [0, 1, 2, 3] //Your Colume value those you want print
+                columns: [0, 1, 2] //Your Colume value those you want print
             },
             title: "Report List",
             className: "btn-sm prints"
         }, {
             extend: "print",
             exportOptions: {
-                columns: [0, 1, 2, 3] //Your Colume value those you want print
+                columns: [0, 1, 2] //Your Colume value those you want print
             },
             title: "<center>Report List</center>",
             className: "btn-sm prints"
@@ -68,6 +68,7 @@ $(document).ready(function() {
                 data.fromdate = $('#from_date').val();
                 data.todate = $('#to_date').val();
                 data.csrf_test_name = csrf_test_name;
+                data.empid = $('#empid').val();
             }
         },
         'columns': [{
@@ -75,9 +76,6 @@ $(document).ready(function() {
             },
             {
                 data: 'invoice_id'
-            },
-            {
-                data: 'customer_name'
             },
             {
                 data: 'total_amount',

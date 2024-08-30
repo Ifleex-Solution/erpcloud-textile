@@ -1,10 +1,17 @@
  <!-- date between search -->
+ <style>
+     input[type="password"]::-ms-reveal,
+     input[type="password"]::-ms-clear {
+         display: none;
+     }
+ </style>
+
  <div class="row">
      <div class="col-sm-12">
          <div class="panel panel-default">
              <div class="panel-body">
                  <div class="col-sm-15">
-                     <?php echo form_open('', array('class' => 'form-inline', 'method' => 'get','autocomplete' => 'off')) ?>
+                     <?php echo form_open('', array('class' => 'form-inline', 'method' => 'get', 'autocomplete' => 'off')) ?>
                      <?php
                         date_default_timezone_set('Asia/Colombo');
 
@@ -27,10 +34,10 @@
                          <?php if ($this->permission1->method('manage_invoice', 'view')->access()) { ?>
                              <label for="empid" class="mr-2 mb-0">Emp Id</label>
                              <div class="input-group mr-4" style="width: 150px;">
-                             <input type="password" tabindex="4" class="form-control" name="empid" id="empid" autocomplete="new-password">
+                                 <input type="password" tabindex="4" class="form-control" name="empid" id="empid" autocomplete="new-password">
                              </div>
                          <?php } ?>
- 
+
                          <?php if (!$this->permission1->method('manage_invoice', 'view')->access()) { ?>
                              <input type="hidden" tabindex="4" class="form-control" name="empid" id="empid" value="123">
                          <?php } ?>

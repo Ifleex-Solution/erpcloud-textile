@@ -129,19 +129,14 @@ class Invoice_model extends CI_Model
         return $this->db->count_all("invoice");
     }
 
-    public function getInvoiceList($postData = null)
+    public function getInvoiceListForAll($postData = null, $empid=null,$sl=null)
     {
         $response = array();
         $usertype = $this->session->userdata('user_type');
         $fromdate = $this->input->post('fromdate', TRUE);
         $todate   = $this->input->post('todate', TRUE);
 
-        $empid   = $this->input->post('empid', TRUE);
-        $logFilePath = 'logfile.log';
-        $fileHandle = fopen($logFilePath, 'a');
-        fwrite($fileHandle,"\nBatch No : ".$empid);
-        fclose($fileHandle);
-       
+       // $empid   = $this->input->post('empid', TRUE);
 
         if (!empty($fromdate)) {
             $datbetween = "(a.date BETWEEN '$fromdate' AND '$todate')";
@@ -156,6 +151,166 @@ class Invoice_model extends CI_Model
         $columnName   = $postData['columns'][$columnIndex]['data'];
         $columnSortOrder = $postData['order'][0]['dir']; // asc or desc
         $searchValue  = $postData['search']['value']; // Search value
+
+    
+       
+
+        ## Search 
+        $searchQuery = "";
+        if ($searchValue != '') {
+            $searchQuery = " (b.customer_name like '%" . $searchValue . "%' or a.invoice like '%" . $searchValue . "%' or a.date like'%" . $searchValue . "%' or a.invoice_id like'%" . $searchValue . "%' or u.first_name like'%" . $searchValue . "%'or u.last_name like'%" . $searchValue . "%')";
+        }
+
+        ## Total number of records without filtering
+        $this->db->select('count(*) as allcount');
+        if($empid=="god"){
+            $this->db->from('emp a');
+
+        }else{
+            $this->db->from('invoice a');
+
+        }
+        $this->db->join('employee_history b', 'b.id = a.employee_id', 'left');
+        $this->db->join('users u', 'u.user_id = a.sales_by', 'left');
+        if ($usertype == 2) {
+            $this->db->where('a.sales_by', $this->session->userdata('user_id'));
+        }
+        if (!empty($fromdate) && !empty($todate)) {
+            $this->db->where($datbetween);
+        }
+        if ($searchValue != '')
+            $this->db->where($searchQuery);
+
+        $records = $this->db->get()->result();
+        $totalRecords = $records[0]->allcount;
+
+        ## Total number of record with filtering
+        $this->db->select('count(*) as allcount');
+        if($empid=="god"){
+            $this->db->from('emp a');
+
+        }else{
+            $this->db->from('invoice a');
+
+        }
+        $this->db->join('employee_history b', 'b.id = a.employee_id', 'left');
+        $this->db->join('users u', 'u.user_id = a.sales_by', 'left');
+        if ($usertype == 2) {
+            $this->db->where('a.sales_by', $this->session->userdata('user_id'));
+        }
+        if (!empty($fromdate) && !empty($todate)) {
+            $this->db->where($datbetween);
+        }
+        if ($searchValue != '')
+            $this->db->where($searchQuery);
+
+        $records = $this->db->get()->result();
+        $totalRecordwithFilter = $records[0]->allcount;
+
+        ## Fetch records
+        $this->db->select("a.*,b.first_name,u.first_name,u.last_name");
+        if($empid=="god"){
+            $this->db->from('emp a');
+
+        }else{
+            $this->db->from('invoice a');
+
+        }
+        $this->db->join('employee_history b', 'b.id = a.employee_id', 'left');
+        $this->db->join('users u', 'u.user_id = a.sales_by', 'left');
+        if ($usertype == 2) {
+            $this->db->where('a.sales_by', $this->session->userdata('user_id'));
+        }
+        if (!empty($fromdate) && !empty($todate)) {
+            $this->db->where($datbetween);
+        }
+        if ($searchValue != '')
+            $this->db->where($searchQuery);
+
+        $this->db->order_by($columnName, $columnSortOrder);
+        $this->db->limit($rowperpage/2, $start/2);
+        $records = $this->db->get()->result();
+        $data = array();
+        $type=$empid=="god"?"B":"A";
+
+        foreach ($records as $record) {
+    
+           
+            $button = '';
+            $base_url = base_url();
+            $jsaction = "return confirm('Are You Sure ?')";
+
+            $button .= '  <a href="' . $base_url . 'invoice_details/' . $record->invoice_id .'q'.$type. '" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('invoice') . '"><i class="fa fa-window-restore" aria-hidden="true"></i></a>';
+
+            $button .= '  <a href="' . $base_url . 'invoice_pad_print/'. $record->invoice_id .'q'.$type. '" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('pad_print') . '"><i class="fa fa-fax" aria-hidden="true"></i></a>';
+
+            $button .= '  <a href="' . $base_url . 'pos_print/' . $record->invoice_id .'q'.$type.'" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('pos_invoice') . '"><i class="fa fa-fax" aria-hidden="true"></i></a>';
+            // if ($this->permission1->method('manage_invoice', 'update')->access()) {
+            //     $approve = $this->db->select('status,referenceNo')->from('acc_vaucher')->where('referenceNo', $record->invoice_id)->where('status', 1)->get()->num_rows();
+            //     if ($approve == 0) {
+            //         if ($record->ret_adjust_amnt == '') {
+
+            //             $button .= ' <a href="' . $base_url . 'invoice_edit/' . $record->invoice_id . '" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('update') . '"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+            //         }
+            //     }
+            // }
+
+            $button .= ' <a href="' . $base_url . 'invoice_edit/' . $record->invoice_id .'q'.$type. '" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('update') . '"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+
+
+
+
+            $details = '  <a href="' . $base_url . 'invoice_details/' . $record->invoice_id .'q'.$type. '" class="" >' .$type. $record->invoice . '</a>';
+
+            $data[] = array(
+                'sl'               => $sl,
+                'invoice'          => $details,
+                'salesman'         => $record->first_name . ' ' . $record->last_name,
+                // 'customer_name'    => $record->customer_name,
+                'final_date'       => date("d-M-Y", strtotime($record->date)),
+                'total_amount'     => $record->total_amount,
+                'button'           => $button,
+
+            );
+            $sl++;
+        }
+
+        ## Response
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecordwithFilter,
+            "iTotalDisplayRecords" => $totalRecords,
+            "aaData" => $data,
+            'sl'=>$sl
+        );
+
+        return $response;
+    }
+
+
+    public function getInvoiceList($postData = null, $empid=null,$sl=null)
+    {
+        $response = array();
+        $usertype = $this->session->userdata('user_type');
+        $fromdate = $this->input->post('fromdate', TRUE);
+        $todate   = $this->input->post('todate', TRUE);
+
+       // $empid   = $this->input->post('empid', TRUE);
+
+        if (!empty($fromdate)) {
+            $datbetween = "(a.date BETWEEN '$fromdate' AND '$todate')";
+        } else {
+            $datbetween = "";
+        }
+        ## Read value
+        $draw         = $postData['draw'];
+        $start        = $postData['start'];
+        $rowperpage   = $postData['length']; // Rows display per page
+        $columnIndex  = $postData['order'][0]['column']; // Column index
+        $columnName   = $postData['columns'][$columnIndex]['data'];
+        $columnSortOrder = $postData['order'][0]['dir']; // asc or desc
+        $searchValue  = $postData['search']['value']; // Search value
+       
 
         ## Search 
         $searchQuery = "";
@@ -233,31 +388,37 @@ class Invoice_model extends CI_Model
         $this->db->limit($rowperpage, $start);
         $records = $this->db->get()->result();
         $data = array();
-        $sl = 1;
+
+         $type=$empid=="god"?"B":"A";
 
         foreach ($records as $record) {
+        
+           
             $button = '';
             $base_url = base_url();
             $jsaction = "return confirm('Are You Sure ?')";
 
-            $button .= '  <a href="' . $base_url . 'invoice_details/' . $record->invoice_id . '" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('invoice') . '"><i class="fa fa-window-restore" aria-hidden="true"></i></a>';
+            $button .= '  <a href="' . $base_url . 'invoice_details/' . $record->invoice_id .'q'.$type. '" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="'.$type . display('invoice') . '"><i class="fa fa-window-restore" aria-hidden="true"></i></a>';
 
-            $button .= '  <a href="' . $base_url . 'invoice_pad_print/' . $record->invoice_id . '" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('pad_print') . '"><i class="fa fa-fax" aria-hidden="true"></i></a>';
+            $button .= '  <a href="' . $base_url . 'invoice_pad_print/' . $record->invoice_id .'q'.$type. '" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('pad_print') . '"><i class="fa fa-fax" aria-hidden="true"></i></a>';
 
-            $button .= '  <a href="' . $base_url . 'pos_print/' . $record->invoice_id . '" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('pos_invoice') . '"><i class="fa fa-fax" aria-hidden="true"></i></a>';
-            if ($this->permission1->method('manage_invoice', 'update')->access()) {
-                $approve = $this->db->select('status,referenceNo')->from('acc_vaucher')->where('referenceNo', $record->invoice_id)->where('status', 1)->get()->num_rows();
-                if ($approve == 0) {
-                    if ($record->ret_adjust_amnt == '') {
+            $button .= '  <a href="' . $base_url . 'pos_print/' . $record->invoice_id .'q'.$type. '" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('pos_invoice') . '"><i class="fa fa-fax" aria-hidden="true"></i></a>';
+            // if ($this->permission1->method('manage_invoice', 'update')->access()) {
+            //     $approve = $this->db->select('status,referenceNo')->from('acc_vaucher')->where('referenceNo', $record->invoice_id)->where('status', 1)->get()->num_rows();
+            //     if ($approve == 0) {
+            //         if ($record->ret_adjust_amnt == '') {
 
-                        $button .= ' <a href="' . $base_url . 'invoice_edit/' . $record->invoice_id . '" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('update') . '"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
-                    }
-                }
-            }
+            //             $button .= ' <a href="' . $base_url . 'invoice_edit/' . $record->invoice_id . '" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('update') . '"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
+            //         }
+            //     }
+            // }
+
+            $button .= ' <a href="' . $base_url . 'invoice_edit/' . $record->invoice_id .'q'.$type.'" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('update') . '"><i class="fa fa-pencil" aria-hidden="true"></i></a> ';
 
 
 
-            $details = '  <a href="' . $base_url . 'invoice_details/' . $record->invoice_id . '" class="" >' . $record->invoice . '</a>';
+
+            $details = '  <a href="' . $base_url . 'invoice_details/' . $record->invoice_id .'q'.$type. '" class="" >'.$type . $record->invoice . '</a>';
 
             $data[] = array(
                 'sl'               => $sl,
@@ -282,6 +443,8 @@ class Invoice_model extends CI_Model
 
         return $response;
     }
+
+  
 
 
     public function invoice_taxinfo($invoice_id)

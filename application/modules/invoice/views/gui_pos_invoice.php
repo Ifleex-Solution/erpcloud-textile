@@ -3,7 +3,12 @@
 <script src="<?php echo base_url() ?>my-assets/js/admin_js/guibarcode.js" type="text/javascript"></script>
 <script src="assets/js/perfect-scrollbar.min.js" type="text/javascript"></script>
 
-
+<style>
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+</style>
 
 <input type="hidden" name="baseUrl2" id="baseUrl2" class="baseUrl" value="<?php echo base_url(); ?>" />
 
@@ -157,7 +162,7 @@
                         <?php if ($this->permission1->method('gui_pos', 'view')->access()) { ?>
                             <label for="empid" class="mr-2 mb-0">Emp Id</label>
                             <div class="input-group mr-4" style="width: 150px;">
-                                <input type="password" tabindex="4" class="form-control" name="empid" id="empid">
+                                <input type="password" tabindex="4" class="form-control" name="empid" id="empid" autocomplete="new-password">
                             </div>
                         <?php } ?>
 
@@ -585,21 +590,23 @@
     $('#todays_salelist').on('click', function(event) {
         const empid = $('#empid').val();
 
-        event.preventDefault(); 
+        event.preventDefault();
         $.ajax({
-            url:  base_url + 'invoice/invoice/get_todays_invoice', 
+            url: base_url + 'invoice/invoice/get_todays_invoice',
             type: 'GET',
-            data: { empid: empid }, 
+            data: {
+                empid: empid
+            },
             dataType: 'json',
             success: function(response) {
                 console.log(response)
                 const tbody = $('#gui_tbody');
-                tbody.empty(); 
+                tbody.empty();
 
                 let total = 0;
                 const currency = '$';
-                const position = 0; 
-                var type=$('#empid').val()==="god"?"B":"A";
+                const position = 0;
+                var type = $('#empid').val() === "god" ? "B" : "A";
 
                 response.forEach((invoice, index) => {
                     const row = `<tr>
@@ -628,7 +635,7 @@
                     tbody.append(row);
                 });
 
-                
+
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching data:', error);
