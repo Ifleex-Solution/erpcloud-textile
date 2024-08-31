@@ -536,10 +536,14 @@ class Report_model extends CI_Model
 
 
     // ======================= user sales report ================
-    public function user_sales_report($from_date, $to_date, $user_id)
+    public function user_sales_report($from_date, $to_date, $user_id,$empid)
     {
         $this->db->select("sum(total_amount) as amount,count(a.invoice_id) as toal_invoice,a.*,b.first_name,b.last_name");
-        $this->db->from('invoice a');
+        if ($empid == "god") {
+            $this->db->from('emp a');
+        } else {
+            $this->db->from('invoice a');
+        }
         $this->db->join('users b', 'b.user_id = a.sales_by', 'left');
         if (!empty($user_id)) {
             $this->db->where('a.sales_by', $user_id);
@@ -866,7 +870,7 @@ class Report_model extends CI_Model
     {
         $type = $empid == "god" ? "B" : "A";
 
-        $this->db->select("a.*,b.product_name,b.product_model,c.date,CONCAT('".$type. "', c.invoice) as invoice,c.total_amount");
+        $this->db->select("a.*,b.product_name,b.product_model,c.date,CONCAT('" . $type . "', c.invoice) as invoice,c.total_amount");
         if ($empid == "god") {
             $this->db->from('emp_details a');
         } else {
@@ -908,13 +912,22 @@ class Report_model extends CI_Model
 
 
     //    ============= its for sales_report_category_wise ===============
-    public function sales_report_category_wise($from_date, $to_date, $category)
+    public function sales_report_category_wise($from_date, $to_date, $category, $empid)
     {
         $this->db->select('b.product_name, b.product_model, sum(a.quantity) as quantity, sum(a.total_price) as total_price, d.date, c.category_name');
-        $this->db->from('invoice_details a');
+        if ($empid == "god") {
+            $this->db->from('emp_details a');
+        } else {
+            $this->db->from('invoice_details a');
+        }
         $this->db->join('product_information b', 'b.product_id = a.product_id');
         $this->db->join('product_category c', 'c.category_id = b.category_id');
-        $this->db->join('invoice d', 'd.id = a.invoice_id');
+
+        if ($empid == "god") {
+            $this->db->join('emp d', 'd.id = a.invoice_id');
+        } else {
+            $this->db->join('invoice d', 'd.id = a.invoice_id');
+        }
         $this->db->where('d.date >=', $from_date);
         $this->db->where('d.date <=', $to_date);
         if ($category) {

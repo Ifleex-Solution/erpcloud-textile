@@ -257,7 +257,22 @@ class Report extends MX_Controller
         $user_id = (!empty($this->input->get('user_id')) ? $this->input->get('user_id') : '');
         $star_date = (!empty($this->input->get('from_date')) ? $this->input->get('from_date') : date('Y-m-d'));
         $end_date = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
-        $sales_report = $this->report_model->user_sales_report($star_date, $end_date, $user_id);
+       // $sales_report = $this->report_model->user_sales_report($star_date, $end_date, $user_id);
+
+        $empid     = (!empty($this->input->get('empid')) ?$this->input->get('empid'): '');
+
+        $sales_report = null;
+
+        if ($empid == "all") {
+            $data1     = $this->report_model->user_sales_report($star_date, $end_date, $user_id, "god");;
+            $data2 = $this->report_model->user_sales_report($star_date, $end_date, $user_id, "123");;
+            $sales_report = array_merge($data1, $data2);
+           
+        } else{
+            $sales_report = $this->report_model->user_sales_report($star_date, $end_date, $user_id, $empid);
+
+        }
+
         $sales_amount = 0;
         if (!empty($sales_report)) {
             $i = 0;
@@ -416,7 +431,24 @@ class Report extends MX_Controller
         $to_date = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
         $category = (!empty($this->input->get('category')) ? $this->input->get('category') : '');
         $category_list = $this->report_model->category_list_product();
-        $sales_report_category_wise = $this->report_model->sales_report_category_wise($from_date, $to_date, $category);
+
+        // $sales_report_category_wise = $this->report_model->sales_report_category_wise($from_date, $to_date, $category);
+
+
+        $empid     = (!empty($this->input->get('empid')) ?$this->input->get('empid'): '');
+
+        $sales_report_category_wise = null;
+
+        if ($empid == "all") {
+            $data1     = $this->report_model->sales_report_category_wise($from_date, $to_date, $category,"god");
+            $data2 = $this->report_model->sales_report_category_wise($from_date, $to_date, $category,"123");
+            $sales_report_category_wise = array_merge($data1, $data2);
+           
+        } else{
+            $sales_report_category_wise = $this->report_model->sales_report_category_wise($from_date, $to_date, $category,$empid);
+
+        }
+
         $data = array(
             'title'                      => display('sales_report_category_wise'),
             'category_list'              => $category_list,
