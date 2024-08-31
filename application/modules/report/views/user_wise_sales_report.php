@@ -56,7 +56,7 @@
         <div class="panel panel-bd lobidrag">
             <div class="panel-heading">
                 <div class="panel-title">
-                    <span><?php echo display('user_wise_sale_report') ?> </span>
+                    <span>Floor Wise Report</span>
                     <span class="padding-lefttitle"> <?php if ($this->permission1->method('all_report', 'read')->access()) { ?>
                             <a class="btn btn-primary m-b-5 m-r-2" href="<?php echo base_url('todays_report') ?>"><?php echo display('todays_report') ?></a>
                         <?php } ?>
