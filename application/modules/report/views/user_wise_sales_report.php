@@ -7,8 +7,8 @@
                 <div class="form-group ml-3">
                     <label for="user_name">Floor Name</label>
 
-                    <select name="user_id" class="form-control">
-                        <option value=""> Select User</option>
+                    <select name="user_id" >
+                        <option value=""> </option>
                         <?php foreach ($user_list as $users) { ?>
                             <option value="<?php echo $users['user_id'] ?>" <?php if ($user_id == $users['user_id']) {
                                                                                 echo 'selected';

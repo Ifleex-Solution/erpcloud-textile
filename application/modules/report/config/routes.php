@@ -18,6 +18,9 @@ $route['userwise_sales_report']  = "report/report/bdtask_userwise_sales_report";
 // $route['purchase_report_categorywise']= "report/report/bdtask_purchase_report_category_wise";
 $route['product_wise_sales_report']= "report/report/bdtask_sale_report_productwise";
 $route['category_sales_report']= "report/report/bdtask_categorywise_sales_report";
+$route['employee_wise_report']= "report/report/bdtask_sale_report_employeewise";
+
+
 // $route['sales_return']         = "report/report/bdtask_sales_return";
 // $route['supplier_returns']      = "report/report/bdtask_supplier_return";
 // $route['tax_report']           = "report/report/bdtask_tax_report";

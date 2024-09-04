@@ -254,23 +254,28 @@ class Report extends MX_Controller
 
     public function bdtask_userwise_sales_report()
     {
-        $user_id = (!empty($this->input->get('user_id')) ? $this->input->get('user_id') : '');
-        $star_date = (!empty($this->input->get('from_date')) ? $this->input->get('from_date') : date('Y-m-d'));
-        $end_date = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
-       // $sales_report = $this->report_model->user_sales_report($star_date, $end_date, $user_id);
 
-        $empid     = (!empty($this->input->get('empid')) ?$this->input->get('empid'): '');
+        $star_date      = (!empty($this->input->get('from_date')) ? $this->input->get('from_date') : date('Y-m-d'));
+        $end_date        = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
+        $user_id = (!empty($this->input->get('user_id')) ? $this->input->get('user_id') : '');
+        $empid     = (!empty($this->input->get('empid')) ? $this->input->get('empid') : '');
+
 
         $sales_report = null;
 
         if ($empid == "all") {
-            $data1     = $this->report_model->user_sales_report($star_date, $end_date, $user_id, "god");;
-            $data2 = $this->report_model->user_sales_report($star_date, $end_date, $user_id, "123");;
-            $sales_report = array_merge($data1, $data2);
-           
-        } else{
-            $sales_report = $this->report_model->user_sales_report($star_date, $end_date, $user_id, $empid);
+            $data1     = $this->report_model->user_sales_report($star_date, $end_date, $user_id, "god");
+            $data2     = $this->report_model->user_sales_report($star_date, $end_date, $user_id, "123");
 
+            if (empty($data1)) {
+                $sales_report = $data1;
+            } else if (empty($data2)) {
+                $sales_report = $data2;
+            } else {
+                $sales_report = array_merge($data1, $data2);
+            }
+        } else {
+            $sales_report = $this->report_model->user_sales_report($star_date, $end_date, $user_id, $empid);
         }
 
         $sales_amount = 0;
@@ -377,23 +382,99 @@ class Report extends MX_Controller
         echo modules::run('template/layout', $data);
     }
 
+    public function bdtask_sale_report_employeewise()
+    {
+        $from_date      = (!empty($this->input->get('from_date')) ? $this->input->get('from_date') : date('Y-m-d'));
+        $to_date        = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
+        $employee_id     = (!empty($this->input->get('employee_id')) ? $this->input->get('employee_id') : '');
+        $empid     = (!empty($this->input->get('empid')) ? $this->input->get('empid') : '');
+
+
+        $employee_report=[];
+        if ($empid == "all") {
+            $data1     = $this->report_model->retrieve_employee_sales_report($from_date, $to_date, $employee_id, "god");;
+            $data2 = $this->report_model->retrieve_employee_sales_report($from_date, $to_date, $employee_id, "123");;
+            if (empty($data1) && empty($data2)) {
+            } else if (empty($data1)) {
+                $employee_report = $data1;
+            } else if (empty($data2)) {
+                $employee_report = $data2;
+            } else {
+                $report = array_merge($data1, $data2);
+
+                foreach ($report as $k => $v) {
+                     $existing_ids = array_column($employee_report, 'employee_id');
+                    if (!in_array($v['employee_id'], $existing_ids)) {
+
+                        $employee_report[] = $v;
+                    }else{
+                        foreach ($employee_report as &$report_entry) {
+                            if ($report_entry['employee_id'] == $v['employee_id']) {
+                                $report_entry['total_sale'] += $v['total_sale'];
+                                $report_entry['total_amount'] += $v['total_amount'];
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            $employee_report = $this->report_model->retrieve_employee_sales_report($from_date, $to_date, $employee_id, $empid);
+        }
+        $employee_list = $this->report_model->employee_list();
+        if (!empty($employee_report)) {
+            $i = 0;
+            foreach ($employee_report as $k => $v) {
+                $i++;
+                $employee_report[$k]['sl'] = $i;
+            }
+        }
+        $sub_total = 0;
+        if (!empty($employee_report)) {
+            foreach ($employee_report as $k => $v) {
+                //  $product_report[$k]['sales_date'] = $this->occational->dateConvert($product_report[$k]['date']);
+                $sub_total = $sub_total + $employee_report[$k]['total_amount'];
+
+                $employee_report[$k]['total_amount'] = number_format($employee_report[$k]['total_amount'], 2, '.', ',');
+            }
+        }
+        $data = array(
+            
+            'title'          => display('sales_report_employee_wise'),
+            'sub_total'      => number_format($sub_total, 2, '.', ','),
+            'employee_report' => $employee_report,
+            'employee_list'   => $employee_list,
+            'employee_id'     => $employee_id,
+            'from'           => $from_date,
+            'to'             => $to_date,
+        );
+        $data['module']   = "report";
+        $data['page']     = "employee_wise_report";
+        echo modules::run('template/layout', $data);
+    }
+
     public function bdtask_sale_report_productwise()
     {
         $from_date      = (!empty($this->input->get('from_date')) ? $this->input->get('from_date') : date('Y-m-d'));
         $to_date        = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
         $product_id     = (!empty($this->input->get('product_id')) ? $this->input->get('product_id') : '');
-        $empid     = (!empty($this->input->get('empid')) ?$this->input->get('empid'): '');
+        $empid     = (!empty($this->input->get('empid')) ? $this->input->get('empid') : '');
 
         $product_report = null;
 
         if ($empid == "all") {
             $data1     = $this->report_model->retrieve_product_sales_report($from_date, $to_date, $product_id, "god");;
             $data2 = $this->report_model->retrieve_product_sales_report($from_date, $to_date, $product_id, "123");;
-            $product_report = array_merge($data1, $data2);
-           
-        } else{
-            $product_report = $this->report_model->retrieve_product_sales_report($from_date, $to_date, $product_id, $empid);
 
+
+            if (empty($data1)) {
+                $product_report = $data1;
+            } else if (empty($data2)) {
+                $product_report = $data2;
+            } else {
+                $product_report = array_merge($data1, $data2);
+            }
+        } else {
+            $product_report = $this->report_model->retrieve_product_sales_report($from_date, $to_date, $product_id, $empid);
         }
         $product_list = $this->report_model->product_list();
         if (!empty($product_report)) {
@@ -435,18 +516,22 @@ class Report extends MX_Controller
         // $sales_report_category_wise = $this->report_model->sales_report_category_wise($from_date, $to_date, $category);
 
 
-        $empid     = (!empty($this->input->get('empid')) ?$this->input->get('empid'): '');
+        $empid     = (!empty($this->input->get('empid')) ? $this->input->get('empid') : '');
 
         $sales_report_category_wise = null;
 
         if ($empid == "all") {
-            $data1     = $this->report_model->sales_report_category_wise($from_date, $to_date, $category,"god");
-            $data2 = $this->report_model->sales_report_category_wise($from_date, $to_date, $category,"123");
-            $sales_report_category_wise = array_merge($data1, $data2);
-           
-        } else{
-            $sales_report_category_wise = $this->report_model->sales_report_category_wise($from_date, $to_date, $category,$empid);
-
+            $data1     = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, "god");
+            $data2 = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, "123");
+            if (empty($data1)) {
+                $sales_report_category_wise = $data1;
+            } else if (empty($data2)) {
+                $sales_report_category_wise = $data2;
+            } else {
+                $sales_report_category_wise = array_merge($data1, $data2);
+            }
+        } else {
+            $sales_report_category_wise = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, $empid);
         }
 
         $data = array(

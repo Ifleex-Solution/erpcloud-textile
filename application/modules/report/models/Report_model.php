@@ -536,7 +536,7 @@ class Report_model extends CI_Model
 
 
     // ======================= user sales report ================
-    public function user_sales_report($from_date, $to_date, $user_id,$empid)
+    public function user_sales_report($from_date, $to_date, $user_id, $empid)
     {
         $this->db->select("sum(total_amount) as amount,count(a.invoice_id) as toal_invoice,a.*,b.first_name,b.last_name");
         if ($empid == "god") {
@@ -899,6 +899,41 @@ class Report_model extends CI_Model
         return false;
     }
 
+    public function retrieve_employee_sales_report($from_date, $to_date, $employee_id, $empid)
+    {
+        // Construct the query
+        $this->db->select("
+        i.employee_id,
+    CONCAT(eh.first_name, ' ', eh.last_name) AS employee_name,
+    COUNT(*) AS total_sale,
+    SUM(i.total_amount) AS total_amount
+");
+
+        // Define the FROM clause based on the condition
+        if ($empid == "god") {
+            $this->db->from('invoice i');
+        } else {
+            $this->db->from('emp i');
+        }
+
+        // Perform a LEFT JOIN with employee_history
+        $this->db->join('employee_history eh', 'eh.id = i.employee_id', 'left');
+
+        // Apply the WHERE clauses for date filtering and optional employee_id filtering
+        $this->db->where('i.date >=', $from_date);
+        $this->db->where('i.date <=', $to_date);
+        if ($employee_id) {
+            $this->db->where('i.employee_id', $employee_id);
+        }
+        $this->db->group_by('i.employee_id');
+        $this->db->order_by('total_sale', 'DESC');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        }
+        return false;
+    }
+
     public function product_list()
     {
         $this->db->select('*');
@@ -909,6 +944,18 @@ class Report_model extends CI_Model
         }
         return false;
     }
+
+    public function employee_list()
+    {
+        $this->db->select('*');
+        $this->db->from('employee_history');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        }
+        return false;
+    }
+
 
 
     //    ============= its for sales_report_category_wise ===============

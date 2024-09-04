@@ -4,21 +4,22 @@
     <div class="col-sm-12">
         <div class="panel panel-default">
             <div class="panel-body">
-                <?php echo form_open('product_wise_sales_report', array('class' => 'form-inline', 'method' => 'get', 'id' => 'salesReportForm')) ?>
+                <?php echo form_open('employee_wise_report', array('class' => 'form-inline', 'method' => 'get', 'id' => 'salesReportForm')) ?>
 
                 <div class="form-group ml-3">
-                    <label for="product"><?php echo display('product') ?></label>
-                    <select name="product_id">
+                    <label for="employee">Employee</label>
+                    <select name="employee_id">
                         <option value=""></option>
-                        <?php foreach ($product_list as $productss) { ?>
-                            <option value="<?php echo  $productss['product_id'] ?>"
-                                <?php if ($productss['product_id'] == $product_id) {
+                        <?php foreach ($employee_list as $employee) { ?>
+                            <option value="<?php echo  $employee['id'] ?>"
+                                <?php if ($employee['id'] == $employee_id) {
                                     echo 'selected';
                                 } ?>>
-                                <?php echo  $productss['product_name'] ?></option>
+                                <?php echo  $employee['first_name'].' '.$employee['last_name'] ?></option>
                         <?php } ?>
                     </select>
                 </div>
+              
 
                 <div class="form-group ml-3">
                     <label for="from_date"><?php echo display('start_date') ?></label>
@@ -33,7 +34,7 @@
                 </div>
 
                 <div class="form-group ml-3">
-                    <?php if ($this->permission1->method('sales_report_product_wise', 'view')->access()) { ?>
+                    <?php if ($this->permission1->method('sales_report_employee_wise', 'view')->access()) { ?>
                         <label for="empid">Emp Id</label>
                         <input type="password" tabindex="4" class="form-control ml-2" name="empid" id="empid" autocomplete="new-password">
                     <?php } else { ?>
@@ -60,7 +61,7 @@
         <div class="panel panel-bd lobidrag">
             <div class="panel-heading">
                 <div class="panel-title">
-                    <span><?php echo display('sales_report_product_wise') ?></span>
+                    <span>Employee Wise Sales Report</span>
                     <span class="padding-lefttitle">
                         <?php if ($this->permission1->method('todays_sales_report', 'read')->access()) { ?>
                             <a href="<?php echo base_url('sales_report') ?>" class="btn btn-info m-b-5 m-r-2"><i
@@ -90,7 +91,7 @@
                                     <br>
                                     <?php echo $company_info[0]['mobile']; ?>
                                     <br>
-                                    <strong><?php echo display('sales_report_product_wise') ?></strong>
+                                    <strong>Employee Wise Sales Report</strong>
                                 </td>
 
                                 <td align="right" class="print-table-tr">
@@ -108,30 +109,24 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th><?php echo display('sales_date') ?></th>
-                                    <th><?php echo display('product_name') ?></th>
-                                    <th><?php echo display('product_model') ?></th>
-                                    <th><?php echo display('invoice_no') ?></th>
-                                    <th><?php echo display('rate') ?></th>
+                                    <th>Sl</th>
+                                    <th>Employee name </th>
+                                    <th>Total Sale</th>
                                     <th><?php echo display('total_ammount') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                if ($product_report) {
-                                    foreach ($product_report as $reporst) {
+                                if ($employee_report) {
+                                    foreach ($employee_report as $reporst) {
                                 ?>
 
                                         <tr>
-                                            <td><?php echo $reporst['sales_date'] ?></td>
-                                            <td><?php echo $reporst['product_name'] ?></td>
-                                            <td><?php echo $reporst['product_model'] ?></td>
-                                            <td><?php echo $reporst['invoice'] ?></td>
+                                            <td><?php echo $reporst['sl'] ?></td>
+                                            <td><?php echo $reporst['employee_name'] ?></td>
+                                            <td><?php echo $reporst['total_sale'] ?></td>
                                             <td class="text-right">
-                                                <?php echo (($position == 0) ? $currency . ' ' . $reporst['rate'] : $reporst['rate'] . ' ' . $currency) ?>
-                                            </td>
-                                            <td class="text-right">
-                                                <?php echo (($position == 0) ? $currency . ' ' . $reporst['total_price'] : $reporst['total_price'] . ' ' . $currency) ?>
+                                                <?php echo (($position == 0) ? $currency . ' ' . $reporst['total_amount'] : $reporst['total_amount'] . ' ' . $currency) ?>
                                             </td>
                                         </tr>
 
@@ -142,7 +137,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="5" align="right">&nbsp; <b><?php echo display('total_ammount') ?></b>
+                                    <td colspan="3" align="right">&nbsp; <b><?php echo display('total_ammount') ?></b>
                                     </td>
                                     <td class="text-right">
                                         <b><?php echo (($position == 0) ? $currency . ' ' . $sub_total : $sub_total . ' ' . $currency) ?></b>
@@ -159,7 +154,7 @@
 
 <script>
     if (window.history && window.history.pushState) {
-        window.history.pushState({}, document.title, '/erpcloud-textile/product_wise_sales_report');
+        window.history.pushState({}, document.title, '/erpcloud-textile/employee_wise_sales_report');
     }
     document.getElementById('salesReportForm').addEventListener('submit', function(e) {
         e.preventDefault(); // Prevent the form from submitting immediately
