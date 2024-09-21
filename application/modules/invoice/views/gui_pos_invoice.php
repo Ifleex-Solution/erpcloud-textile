@@ -587,6 +587,7 @@
         }
     });
 
+   
     $('#todays_salelist').on('click', function(event) {
         const empid = $('#empid').val();
 

@@ -202,8 +202,6 @@
             }
         });
 
-
-
         // $('#btn-filter').click(function() {
         //     purchasedatatable.ajax.reload();
         // });
@@ -270,12 +268,6 @@
                 }
 
                 chequedetail.innerHTML += "<p><b>Last Updated Date</b> : " + parsedData[0].updatedate + "</p>";
-
-
-
-
-
-
             }
         });
     }

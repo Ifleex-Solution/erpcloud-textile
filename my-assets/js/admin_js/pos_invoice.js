@@ -686,6 +686,7 @@ $(document).ready(function () {
 
 "use strict";
 function onselectimage(id) {
+    console.log(id)
     var product_id = id;
     var base_url = $('#base_url').val();
     var csrf_test_name = $('[name="csrf_test_name"]').val();

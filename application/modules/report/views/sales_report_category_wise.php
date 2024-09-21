@@ -1,3 +1,4 @@
+
 <div class="row">
     <div class="col-sm-12">
         <div class="panel panel-default">
@@ -63,7 +64,7 @@
                         <?php if ($this->permission1->method('product_sales_reports_date_wise', 'read')->access()) { ?>
                             <a href="<?php echo base_url('product_wise_sales_report') ?>" class="btn btn-primary m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo display('sales_report_product_wise') ?> </a>
                         <?php } ?>
-                        
+
                     </span>
                 </div>
             </div>
@@ -110,8 +111,10 @@
                                     <th><?php echo display('product_name') ?></th>
                                     <th><?php echo display('model') ?></th>
                                     <th><?php echo display('date') ?></th>
+                                    <th>Invoice Type</th>
+
                                     <th><?php echo display('quantity') ?></th>
-                                    <th><?php echo display('ammount') ?></th>
+                                    <th><?php echo display('amount') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -125,27 +128,35 @@
                                             <td><?php echo html_escape($single->product_name); ?></td>
                                             <td><?php echo html_escape($single->product_model); ?></td>
                                             <td><?php echo html_escape($single->date); ?></td>
+
+                                            <td><?php echo html_escape($single->invoiceType); ?></td>
+
                                             <td><?php echo html_escape($single->quantity); ?></td>
-                                            <td class="text-right"><?php echo (($position == 0) ? $currency . ' ' . number_format($single->total_price, 2) : number_format($single->total_price, 2) . ' ' . $currency);
-                                                                    $total += $single->total_price;
-                                                                    ?></td>
+                                            <td class="text-right">
+                                                <?php echo (($position == 0) ? $currency . ' ' . number_format($single->total_price, 2) : number_format($single->total_price, 2) . ' ' . $currency);
+                                                $total += $single->total_price;
+                                                ?>
+                                            </td>
                                         </tr>
                                     <?php
                                     }
                                 } else {
                                     ?>
                                     <tr>
-                                        <th class="text-center" colspan="6"><?php echo display('not_found'); ?></th>
+                                        <th class="text-center" colspan="7"><?php echo display('not_found'); ?></th>
                                     </tr>
                                 <?php } ?>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="5" class="text-right"><b><?php echo display('total') ?></b></td>
-                                    <td class="text-right"><b><?php echo (($position == 0) ? $currency . ' ' . number_format($total, 2) : number_format($total, 2) . ' ' . $currency) ?></b></td>
+                                    <td colspan="6" class="text-right"><b><?php echo display('total') ?></b></td>
+                                    <td class="text-right"><b>
+                                            <?php echo (($position == 0) ? $currency . ' ' . number_format($total, 2) : number_format($total, 2) . ' ' . $currency) ?>
+                                        </b></td>
                                 </tr>
                             </tfoot>
                         </table>
+
                     </div>
                 </div>
 

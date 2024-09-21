@@ -34,12 +34,7 @@
 
         <ul class="nav navbar-nav">
             <!-- Messages -->
-            <?php if($this->permission1->method('gui_pos','create')->access()){
-           ?>
-             <li>
-                    <a href="<?php echo base_url('gui_pos')?>" class="text-white  btn-success pos-btn"> <span class="fa fa-plus"></span> <?php echo display('pos_invoice') ?></a>
-                </li>
-              <?php }?>
+           
               <?php if($max_version > $current_version){?>
                 <li> <blink><a href="<?php echo base_url('autoupdate/Autoupdate')?>" class="text-white  btn-danger update-btn"> <?php echo $max_version.' Version Available'; ?></a></blink>
                 </li>

@@ -28,22 +28,17 @@ class Invoice extends MX_Controller
 
     function bdtask_invoice_form()
     {
-        $walking_customer      = $this->invoice_model->pos_customer_setup();
-        $data['all_pmethod']   = $this->invoice_model->pmethod_dropdown();
+        // $walking_customer      = $this->invoice_model->pos_customer_setup();
+        // $data['all_pmethod']   = $this->invoice_model->pmethod_dropdown();
 
-        $data['customer_name'] = $walking_customer[0]['customer_name'];
-        $data['customer_id']   = $walking_customer[0]['customer_id'];
+        // $data['customer_name'] = $walking_customer[0]['customer_name'];
+        // $data['customer_id']   = $walking_customer[0]['customer_id'];
         $data['invoice_no']    = $this->number_generator();
         $data['title']         = display('add_invoice');
         $data['taxes']         = $this->invoice_model->tax_fileds();
         $data['module']        = "invoice";
-        $vatortax              = $this->invoice_model->vat_tax_setting();
-        if ($vatortax->fixed_tax == 1) {
-            $data['page']          = "add_invoice_form";
-        }
-        if ($vatortax->dynamic_tax == 1) {
-            $data['page']          = "add_invoice_form_dynamic";
-        }
+        $data['page']          = "add_invoice_form";
+
         echo modules::run('template/layout', $data);
     }
 
@@ -57,7 +52,7 @@ class Invoice extends MX_Controller
     }
 
     public function CheckInvoiceList()
-    {  
+    {
         $empid   = $this->input->post('empid', TRUE);
         $postData = $this->input->post();
         if ($empid == "all") {
@@ -818,6 +813,58 @@ class Invoice extends MX_Controller
         }
     }
 
+    public function sales_insert()
+    {
+        $incremented_id = $this->number_generator();
+
+        $datainv = array(
+            'invoice_id'      => $incremented_id,
+            'date'            => (!empty($this->input->post('date', TRUE)) ? $this->input->post('date', TRUE) : date('Y-m-d')),
+            'total_amount'    => $this->input->post('grandTotal', TRUE),
+            'status'          => 1,
+            'employee_id'     =>$this->input->post('employeeId', TRUE)
+
+        );
+        $this->db->insert('invoice', $datainv);
+        $inv_insert_id =  $this->db->insert_id();
+
+        $productIds        = $this->input->post('productIds', TRUE);
+        $productQuantities       = $this->input->post('productQuantities', TRUE);
+        $productRates        = $this->input->post('productRates', TRUE);
+        $discountTypes            = $this->input->post('discountTypes', TRUE);
+        $discounts       = $this->input->post('discounts', TRUE);
+        $discountValues          = $this->input->post('discountValues', TRUE);
+        $totalPrices = $this->input->post('totalPrices', TRUE);
+        for ($i = 0, $n = count($this->input->post('productIds', true)); $i < $n; $i++) {
+
+            $data1 = array(
+                'invoice_details_id' => $this->generator(15),
+                'invoice_id'         => $inv_insert_id,
+                'product_id'         => $productIds[$i],
+                'quantity'           => $productQuantities[$i],
+                'rate'               => $productRates[$i],
+                'discount'           => $discounts[$i],
+                'discount_per'       => $discountValues[$i],
+                'total_price'        => $totalPrices[$i],
+                'status'             => 1
+            );
+
+            $this->db->insert('invoice_details', $data1);
+        }
+
+        $printdata       = $this->invoice_model->bdtask_invoice_pos_print_direct($inv_insert_id, "all");
+        $data['details'] = $this->load->view('invoice/pos_print', $printdata, true);
+        echo json_encode($data);
+
+        // if (!empty($invoice_id)) {
+
+           
+        // } else {
+        //     $data['status']    = false;
+        //     $data['exception'] = 'Please Try Again';
+        // }
+    }
+
     public function bdtask_manual_possales_insert()
     {
         // $this->form_validation->set_rules('customer_id', display('customer_name'), 'required|max_length[15]');
@@ -1376,6 +1423,36 @@ class Invoice extends MX_Controller
         }
     }
 
+    public function invoice_setup()
+    {
+        $product_id = $this->input->post('product_id', TRUE);
+
+        $product_information = $this->db->select('*')
+            ->from('product_information')
+            ->where('product_information.product_id', $product_id)
+            ->get()
+            ->row();
+
+
+
+
+        if ($product_information != null) {
+
+            $data2 = (object) array(
+                'price'          => $product_information->price,
+                'product_id'     => $product_information->product_id,
+                'product_name'   => $product_information->product_name,
+                'product_model'  => $product_information->product_model,
+                'unit'           => $product_information->unit,
+                'serial_no'      => $product_information->serial_no,
+            );
+
+            echo json_encode($data2);
+        } else {
+            return json_encode("");
+        }
+    }
+
     public function gui_pos_invoice()
     {
         $product_id = $this->input->post('product_id', TRUE);
@@ -1760,7 +1837,7 @@ class Invoice extends MX_Controller
     /*invoice no generator*/
     public function number_generator()
     {
-        $this->db->select_max('invoice', 'invoice_no');
+        $this->db->select_max('invoice_id', 'invoice_no');
         $query      = $this->db->get('invoice');
         $result     = $query->result_array();
         $invoice_no = $result[0]['invoice_no'];

@@ -959,9 +959,9 @@ class Report_model extends CI_Model
 
 
     //    ============= its for sales_report_category_wise ===============
-    public function sales_report_category_wise($from_date, $to_date, $category, $empid)
+    public function sales_report_category_wise($from_date, $to_date, $category, $empid,$invoiceType)
     {
-        $this->db->select('b.product_name, b.product_model, sum(a.quantity) as quantity, sum(a.total_price) as total_price, d.date, c.category_name');
+        $this->db->select("b.product_name, b.product_model, sum(a.quantity) as quantity, sum(a.total_price) as total_price, d.date, c.category_name,'".$invoiceType."' as invoiceType");
         if ($empid == "god") {
             $this->db->from('emp_details a');
         } else {

@@ -390,7 +390,7 @@ class Report extends MX_Controller
         $empid     = (!empty($this->input->get('empid')) ? $this->input->get('empid') : '');
 
 
-        $employee_report=[];
+        $employee_report = [];
         if ($empid == "all") {
             $data1     = $this->report_model->retrieve_employee_sales_report($from_date, $to_date, $employee_id, "god");;
             $data2 = $this->report_model->retrieve_employee_sales_report($from_date, $to_date, $employee_id, "123");;
@@ -403,11 +403,11 @@ class Report extends MX_Controller
                 $report = array_merge($data1, $data2);
 
                 foreach ($report as $k => $v) {
-                     $existing_ids = array_column($employee_report, 'employee_id');
+                    $existing_ids = array_column($employee_report, 'employee_id');
                     if (!in_array($v['employee_id'], $existing_ids)) {
 
                         $employee_report[] = $v;
-                    }else{
+                    } else {
                         foreach ($employee_report as &$report_entry) {
                             if ($report_entry['employee_id'] == $v['employee_id']) {
                                 $report_entry['total_sale'] += $v['total_sale'];
@@ -438,7 +438,7 @@ class Report extends MX_Controller
             }
         }
         $data = array(
-            
+
             'title'          => display('sales_report_employee_wise'),
             'sub_total'      => number_format($sub_total, 2, '.', ','),
             'employee_report' => $employee_report,
@@ -521,8 +521,10 @@ class Report extends MX_Controller
         $sales_report_category_wise = null;
 
         if ($empid == "all") {
-            $data1     = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, "god");
-            $data2 = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, "123");
+            $data1     = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, "god", "B");
+            $data2 = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, "123", "A");
+            if (empty($data1) && empty($data2)) {
+            } else
             if (empty($data1)) {
                 $sales_report_category_wise = $data1;
             } else if (empty($data2)) {
@@ -531,7 +533,8 @@ class Report extends MX_Controller
                 $sales_report_category_wise = array_merge($data1, $data2);
             }
         } else {
-            $sales_report_category_wise = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, $empid);
+            $sales_report_category_wise = $this->report_model->sales_report_category_wise($from_date, $to_date, $category, $empid, "");
+           
         }
 
         $data = array(

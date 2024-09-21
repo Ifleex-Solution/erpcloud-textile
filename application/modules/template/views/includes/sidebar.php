@@ -59,15 +59,7 @@
                                             }
                                             ?>"><a href="<?php echo base_url('invoice_list') ?>"><?php echo display('manage_invoice') ?></a></li>
                     <?php } ?>
-                    <?php if ($this->permission1->method('pos_invoice', 'create')->access()) { ?>
-                        <li class="treeview <?php
-                                            if ($this->uri->segment('1') == ("gui_pos")) {
-                                                echo "active";
-                                            } else {
-                                                echo " ";
-                                            }
-                                            ?>"><a href="<?php echo base_url('gui_pos') ?>"><?php echo display('pos_invoice') ?></a></li>
-                    <?php } ?>
+                 
                     <?php if ($this->permission1->method('terms_list', 'create')->access()) { ?>
                         <li class="treeview <?php
                                             if ($this->uri->segment('1') == ("terms_list")) {
@@ -187,110 +179,7 @@
 
 
 
-      
-        <!-- Account part star -->
-        <?php if ($this->permission1->method('show_tree', 'read')->access() || $this->permission1->method('expenditure_statement', 'read')->access() || $this->permission1->method('bank_reconciliation_report', 'read')->access() || $this->permission1->method('receipt_payment', 'read')->access() || $this->permission1->method('fixedasset_schedule', 'read')->access() || $this->permission1->method('income_statement_form', 'read')->access() || $this->permission1->method('bank_reconciliation', 'read')->access() || $this->permission1->method('predefined_accounts', 'read')->access() ||  $this->permission1->method('subaccount_list', 'read')->access() || $this->permission1->method('financial_year', 'read')->access() || $this->permission1->method('opening_balance', 'create')->access() || $this->permission1->method('supplier_payment', 'create')->access() || $this->permission1->method('customer_receive', 'create')->access() || $this->permission1->method('service_payment', 'create')->access() || $this->permission1->method('debit_voucher', 'read')->access() || $this->permission1->method('credit_voucher', 'read')->access() || $this->permission1->method('aprove_v', 'read')->access() || $this->permission1->method('contra_voucher', 'read')->access() || $this->permission1->method('balance_sheet', 'read')->access() || $this->permission1->method('journal_voucher', 'read')->access() || $this->permission1->method('add_payment_method', 'create')->access() || $this->permission1->method('cash_adjustment', 'create')->access() || $this->permission1->method('payment_method_list', 'read')->access()) { ?>
-            <li class="treeview <?php
-                                if ($this->uri->segment('2') == ("voucher_report") ||  $this->uri->segment('1') == ("bank_reconciliation") ||  $this->uri->segment('1') == ("expenditure_statement") ||  $this->uri->segment('1') == ("expenditure_statement_report") || $this->uri->segment('1') == ("receipt_payment") || $this->uri->segment('1') == ("receipt_payment_report") || $this->uri->segment('1') == ("bank_reconciliation_report") ||  $this->uri->segment('1') == ("fixedasset_schedule") ||  $this->uri->segment('1') == ("fixed_assets_report") ||  $this->uri->segment('1') == ("income_statement_form") ||  $this->uri->segment('1') == ("income_statement") ||  $this->uri->segment('1') == ("aprove_v") || $this->uri->segment('1') == ("add_opening_balance") ||  $this->uri->segment('1') == ("edit_opening_balance") || $this->uri->segment('1') == ("edit_voucher") || $this->uri->segment('1') == ("create_debit_voucher") || $this->uri->segment('1') == ("predefined_accounts") || $this->uri->segment('1') == ("financial_year") || $this->uri->segment('1') == ("subaccount_list") || $this->uri->segment('1') == ("show_tree") || $this->uri->segment('1') == ("opening_balance") || $this->uri->segment('1') == ("cash_book") || $this->uri->segment('1') == ("cash_book_report") || $this->uri->segment('1') == ("day_book") || $this->uri->segment('1') == ("day_book_report") || $this->uri->segment('1') == ("bank_book") || $this->uri->segment('1') == ("bank_book_report") || $this->uri->segment('1') == ("general_ledger") || $this->uri->segment('1') == ("sub_ledger") || $this->uri->segment('1') == ("sub_ledger_report") || $this->uri->segment('1') == ("accounts_report_search") || $this->uri->segment('1') == ("trial_balance") || $this->uri->segment('1') == ("trial_balance_report") || $this->uri->segment('1') == ("profit_loss_report_search") || $this->uri->segment('1') == ("profit_loss_report") || $this->uri->segment('1') == ("cash_flow") || $this->uri->segment('1') == ("inventory_ledger") || $this->uri->segment('1') == ("coa_print") || $this->uri->segment('1') == ("cashflow_form") || $this->uri->segment('1') == ("coa") || $this->uri->segment('1') == ("supplier_payment") || $this->uri->segment('1') == ("supplier_payment_received") || $this->uri->segment('1') == ("customer_payment_receipt") || $this->uri->segment('1') == ("customer_receive") || $this->uri->segment('1') == ("service_payment") || $this->uri->segment('1') == ("cash_adjustment") || $this->uri->segment('1') == ("debit_voucher") || $this->uri->segment('1') == ("credit_voucher") || $this->uri->segment('1') == ("create_credit_voucher") || $this->uri->segment('1') == ("create_contra_voucher") || $this->uri->segment('1') == ("create_journal_voucher") || $this->uri->segment('1') == ("contra_voucher") || $this->uri->segment('1') == ("journal_voucher") || $this->uri->segment('1') == ("voucher_list") || $this->uri->segment('1') == ("edit_voucher") || $this->uri->segment('1') == ("balance_sheet") || $this->uri->segment('1') == ("opening_balance") || $this->uri->segment('1') == ("add_payment_method") || $this->uri->segment('1') == ("payment_method_list")) {
-                                    echo "active";
-                                } else {
-                                    echo " ";
-                                }
-                                ?>">
-                <a href="#">
-                    <i class="fa fa-money"></i><span><?php echo display('accounts') ?></span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <?php if ($this->permission1->method('show_tree', 'read')->access()) { ?>
-                        <li class="treeview <?php if ($this->uri->segment('1') == ("show_tree")) {
-                                                echo "active";
-                                            } else {
-                                                echo " ";
-                                            } ?>"><a href="<?php echo base_url('show_tree') ?>"><?php echo display('c_o_a'); ?></a></li>
-                    <?php } ?>
-                   
-                    <?php if ($this->permission1->method('financial_year', 'read')->access()) { ?>
-                        <li class="treeview <?php if ($this->uri->segment('1') == ("financial_year")) {
-                                                echo "active";
-                                            } else {
-                                                echo " ";
-                                            } ?>"><a href="<?php echo base_url('financial_year') ?>"><?php echo display('financial_year'); ?></a></li>
-                    <?php } ?>
-                    <?php if ($this->permission1->method('opening_balance', 'create')->access()) { ?>
-                        <li class="treeview <?php if ($this->uri->segment('1') == ("opening_balance")) {
-                                                echo "active";
-                                            } else {
-                                                echo " ";
-                                            } ?>"><a href="<?php echo base_url('opening_balance') ?>"><?php echo display('opening_balance'); ?></a>
-                        </li>
-                    <?php } ?>
-                    
 
-
-                    <?php if ($this->permission1->method('add_payment_method', 'create')->access()) { ?>
-                        <li class="treeview <?php if ($this->uri->segment('1') == ("add_payment_method")) {
-                                                echo "active";
-                                            } else {
-                                                echo " ";
-                                            } ?>"><a href="<?php echo base_url('add_payment_method') ?>"><?php echo display('add_payment_method'); ?></a>
-                        </li>
-                    <?php } ?>
-
-                    <?php if ($this->permission1->method('payment_method_list', 'read')->access()) { ?>
-                        <li class="treeview <?php if ($this->uri->segment('1') == ("payment_method_list")) {
-                                                echo "active";
-                                            } else {
-                                                echo " ";
-                                            } ?>"><a href="<?php echo base_url('payment_method_list') ?>"><?php echo display('payment_method_list'); ?></a>
-                        </li>
-                    <?php } ?>
-
-                  
-
-                    <?php if ($this->permission1->method('ac_report', 'create')->access()) { ?>
-                        <li class="treeview <?php
-                                            if ($this->uri->segment('2') == ("voucher_report") || $this->uri->segment('1') == ("expenditure_statement") ||  $this->uri->segment('1') == ("expenditure_statement_report") || $this->uri->segment('1') == ("bank_reconciliation_report") || $this->uri->segment('1') == ("receipt_payment") || $this->uri->segment('1') == ("receipt_payment_report") || $this->uri->segment('1') == ("income_statement_form") ||  $this->uri->segment('1') == ("income_statement") || $this->uri->segment('1') == ("fixedasset_schedule") ||  $this->uri->segment('1') == ("fixed_assets_report") || $this->uri->segment('1') == ("cash_book") || $this->uri->segment('1') == ("cash_book_report") || $this->uri->segment('1') == ("bank_book") || $this->uri->segment('1') == ("bank_book_report") || $this->uri->segment('1') == ("day_book") || $this->uri->segment('1') == ("day_book_report") || $this->uri->segment('1') == ("general_ledger")  || $this->uri->segment('1') == ("sub_ledger") || $this->uri->segment('1') == ("sub_ledger_report") || $this->uri->segment('1') == ("accounts_report_search") || $this->uri->segment('1') == ("trial_balance") || $this->uri->segment('1') == ("trial_balance_report") || $this->uri->segment('1') == ("profit_loss_form") || $this->uri->segment('1') == ("profit_loss_report_search") || $this->uri->segment('1') == ("profit_loss_report") || $this->uri->segment('1') == ("cash_flow") || $this->uri->segment('1') == ("inventory_ledger") || $this->uri->segment('1') == ("coa_print") || $this->uri->segment('1') == ("cashflow_form") || $this->uri->segment('1') == ("balance_sheet")) {
-                                                echo "active";
-                                            } else {
-                                                echo " ";
-                                            }
-                                            ?>"><a href=""><?php echo display('report') ?>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <?php if ($this->permission1->method('cash_book', 'read')->access()) { ?>
-                                    <li class="treeview <?php if ($this->uri->segment('1') == ("cash_book")) {
-                                                            echo "active";
-                                                        } else {
-                                                            echo " ";
-                                                        } ?>"><a href="<?php echo base_url('cash_book') ?>"><?php echo display('cash_book'); ?></a></li>
-                                <?php } ?>
-
-
-                                <?php if ($this->permission1->method('bank_book', 'read')->access()) { ?>
-                                    <li class="treeview <?php if ($this->uri->segment('1') == ("bank_book")) {
-                                                            echo "active";
-                                                        } else {
-                                                            echo " ";
-                                                        } ?>"><a href="<?php echo base_url('bank_book') ?>"><?php echo display('bank_book'); ?></a></li>
-                                <?php } ?>
-                                
-                                
-
-
-                            </ul>
-
-                        </li>
-                    <?php } ?>
-                </ul>
-            </li>
-        <?php } ?>
-        <!--  Account End -->
         <!-- Report menu start -->
         <?php if ($this->permission1->method('add_closing', 'create')->access() || $this->permission1->method('closing_report', 'read')->access() || $this->permission1->method('todays_report', 'read')->access() || $this->permission1->method('todays_customer_receipt', 'read')->access() || $this->permission1->method('todays_sales_report', 'read')->access() || $this->permission1->method('due_report', 'read')->access() || $this->permission1->method('todays_purchase_report', 'read')->access() || $this->permission1->method('purchase_report_category_wise', 'read')->access() || $this->permission1->method('product_sales_reports_date_wise', 'read')->access() || $this->permission1->method('sales_report_category_wise', 'read')->access() || $this->permission1->method('shipping_cost_report', 'read')->access()) { ?>
             <li class="treeview <?php
