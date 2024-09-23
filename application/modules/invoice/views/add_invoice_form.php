@@ -136,7 +136,7 @@
                 <div class="form-group row text-left">
                     <div class="col-sm-12 p-20">
                         <b>Employee Id:</b>
-                        <input type="text" id="searchInput" placeholder="Search..." onkeyup="handleEmployeeKeyPress(event)" />
+                        <input type="text" id="searchInput" placeholder="Employee Id..." onkeyup="handleEmployeeKeyPress(event)" autocomplete="off"/>
                         <input type="text" id="employeeId" hidden />
 
                         <div id="searchResults" style="width: 270px;margin-left:90px"></div>
