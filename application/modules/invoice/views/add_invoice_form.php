@@ -100,9 +100,9 @@
                                 <th class="text-center invoice_fields"><?php echo display('quantity') ?> <i class="text-danger">*</i>
                                 </th>
                                 <th class="text-center product_field"><?php echo display('rate') ?> <i class="text-danger">*</i></th>
-                                <th class="text-center invoice_fields">Discount type </th>
+                                <th class="text-center product_field">Discount type </th>
 
-                                <th class="text-center invoice_fields"><?php echo display('discount') ?> </th>
+                                <th class="text-center product_field">Dis LKR / Percentage </th>
 
 
                                 <th class="text-center product_field"><?php echo display('dis_val') ?> </th>
@@ -304,25 +304,37 @@
             var discount = $("#discount_" + item).val();
             var total_discount = $("#total_discount_" + item).val();
             var dis_type = $("#discount_type_" + item).val();
-            console.log(dis_type)
+
+            
+            if (e.keyCode == 9) {
+                if (dis_type === "p")
+                    $("#discount_type_" + item).val("Percentage");
+                else if (dis_type === "a")
+                    $("#discount_type_" + item).val("Amount");
+
+            }
+
+
             if (quantity > 0 || discount > 0) {
-                if (dis_type === "p") {
+                if (dis_type === "Percentage") {
                     var price = quantity * price_item;
                     var dis = +(price * discount / 100);
                     $("#discount_value_" + item).val(dis);
                     $("#all_discount_" + item).val(dis);
                     var temp = price - dis;
                     $("#total_price_" + item).val(temp);
+                    $("#discount_type_" + item).val("Percentage");
 
 
 
-                } else if (dis_type === "a") {
+                } else if (dis_type === "Amount") {
                     var price = quantity * price_item;
-                    var dis = (discount * quantity);
+                    var dis = discount;
                     $("#discount_value_" + item).val(dis);
                     $("#all_discount_" + item).val(dis);
                     var temp = price - dis;
                     $("#total_price_" + item).val(temp);
+                    $("#discount_type_" + item).val("Amount");
 
                 } else {
                     var total_price = quantity * price_item;
@@ -338,7 +350,6 @@
 
             var total = 0;
             arr.forEach(function(element) {
-                console.log(parseFloat($("#total_price_" + element).val()))
                 total = parseFloat($("#total_price_" + element).val()) + total;
             });
 
@@ -444,7 +455,7 @@
                     employeeId: $('#employeeId').val(),
                 },
                 success: function(data1) {
-                   
+
                     datas = JSON.parse(data1);
                     swal({
                         title: "Success!",
@@ -459,11 +470,11 @@
 
                     }, function(inputValue) {
                         if (inputValue === true) {
-                        
-                           printRawHtml(datas.details);
+
+                            printRawHtml(datas.details);
                         } else {
-                          
-                           // location.reload();
+
+                            // location.reload();
                         }
 
                     });
@@ -501,6 +512,7 @@
                 // For other keys, just filter and show results
                 currentIndex = -1; // Reset the index
                 displayResults(results);
+
             }
         }
 
@@ -521,6 +533,9 @@
                 searchResultsDiv.appendChild(resultItem);
             });
         }
+        currentIndex=0
+        highlightItem(0);
+
     }
 
     function highlightItem(index) {
